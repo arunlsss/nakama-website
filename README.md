@@ -9,6 +9,7 @@ Features:
 - Email/password login with administrator-assigned viewer/importer/admin access.
 - Raw BigSeller XLSX/CSV uploads with browser preview and authoritative server calculations.
 - Price × Quantity GMV, unique orders, complete-order replacement, duplicate export handling and Bangkok dates.
+- Platform Processing orders are excluded from GMV, orders, units and product totals, even when a price is present.
 - Daily trends, store performance, product insights, marketplace/status filters and your requested store labels.
 - Private source storage, compact monthly report pages and atomic publication.
 - Mobile glass bottom navigation and the attendance site's Euclid Circular A and DB Ozone fonts.
