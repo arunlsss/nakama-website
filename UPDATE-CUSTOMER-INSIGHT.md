@@ -32,7 +32,7 @@ The source update does not upload the attached file or deploy Firebase. These st
    ```bash
    cd backend
    npm --prefix functions ci
-   npx firebase deploy --only functions:nkmProcessImport,functions:nkmCustomerInsights --project nakama-sales
+   npx firebase deploy --only functions:nakama:nkmProcessImport,functions:nakama:nkmCustomerInsights --project nakama-sales
    ```
 
    Keep the existing Firebase configuration and project settings. No rule changes, DNS changes or new sign-in provider are required.
