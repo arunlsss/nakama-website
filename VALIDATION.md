@@ -21,12 +21,3 @@ The emulator wrapper now stops the complete process group after three minutes by
 ## Configuration update
 
 Configured the frontend and deployment target for the user-provided `nakama-sales` web app. Public JSON parsed correctly; the deployment project check and actual-project predeploy guard both passed for `nakama-sales`. No live deployment, sign-in or cloud access was performed as part of this configuration update.
-
-## Platform Processing exclusion update (1 October 2026)
-
-- Browser and backend engines match byte for byte. Platform Processing rows bypass price, quantity and SKU validation, but retain order identity/date validation. They contribute nothing to daily/store/marketplace/status/SKU GMV, units or orders. Other statuses retain their existing behavior.
-- An identity/status marker with no item lines is retained privately to prevent older exports restoring an excluded order. Newer included statuses can restore the order. Import history and browser preview count only included orders. Original uploaded files remain archived unchanged.
-- Existing published report rows are also filtered from frontend views, filters and downloads. Reimport after deployment to regenerate cloud summaries under the new rule.
-- PASS: engine regression suite, 100,000-row aggregation, seven cloud-core tests, three frontend DOM tests, and one deployment-guard test. Exclusion-only updates can publish an empty workspace; malformed included rows still block publication. The emulator suite was not rerun for this calculation/UI update.
-- PASS: the supplied 20,000-row BigSeller export produced 64 excluded rows/64 excluded orders, zero invalid rows, 19,318 included orders, 21,262 units and THB 1,478,379.94 GMV. Frontend and server results matched exactly. This validates the attached part, not unprovided parts of the larger batch.
-- No live project was accessed or deployed for this update.
