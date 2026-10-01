@@ -5,7 +5,7 @@ const compact=new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionD
 const colors=['#e53949','#f5a33b','#8a76f4','#37b69c','#609bd8','#c780a5'];
 function line(el,points,previous=[],metric='gmv',bars=false){
  const w=800,h=290,L=65,R=18,T=20,B=44,max=Math.max(...points.map(p=>p.value),...previous.map(p=>p.value),1),value=v=>metric==='gmv'?money.format(v):count.format(v),x=i=>L+(w-L-R)*(points.length<=1?.5:i/(points.length-1)),y=v=>h-B-(h-T-B)*v/max;
- let s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(metric==='gmv'?'Revenue trend':'Order and unit trend')+'"><title>Selected period '+esc(metric)+' trend</title>';
+ let s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(metric==='gmv'?'Order value trend':'Order and unit trend')+'"><title>Selected period '+esc(metric)+' trend</title>';
  for(let i=0;i<5;i++){const v=max*i/4,yy=y(v);s+=`<line class="chart-gridline" x1="${L}" y1="${yy}" x2="${w-R}" y2="${yy}"/><text class="chart-axis" x="${L-12}" y="${yy+5}" text-anchor="end">${compact.format(v)}</text>`;}
  const path=a=>a.map((p,i)=>(i?'L':'M')+x(i)+','+y(p.value)).join(' ');
  if(previous.length)s+=`<path class="comparison-line" d="${path(previous.slice(0,points.length))}"/>`;
