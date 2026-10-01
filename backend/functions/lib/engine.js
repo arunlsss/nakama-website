@@ -7,7 +7,9 @@
     marketplaceStore:['marketplace store'], platform:['marketplace','platform','แพลตฟอร์ม'],
     status:['order status','status','สถานะคำสั่งซื้อ'], sku:['merchant sku','seller sku','sku','รหัสสินค้าผู้ขาย'],
     product:['product name','item name','ชื่อสินค้า'], price:['price','unit price','ราคา','ราคา(฿)'],
-    qty:['quantity','qty','จำนวน'], line:['order item id','line item id','item id']
+    qty:['quantity','qty','จำนวน'], line:['order item id','line item id','item id'],
+    buyer:['username (buyer)','buyer username'],customerCode:['customer code'],
+    province:['province (state)','province','state'],country:['country'],variation:['variation name','variation']
   };
   const text=v=>String(v??'').trim();
   const number=v=>{if(typeof v==='number')return Number.isFinite(v)?v:NaN; const s=text(v).replace(/THB|฿|,/gi,'').trim();return s!==''&&/^[-+]?\d+(\.\d+)?$/.test(s)?Number(s):NaN;};
@@ -35,7 +37,7 @@
     const finish=map=>Array.from(map.values(),v=>{const {ids,...rest}=v;return {...rest,gmv:Math.round(v.gmv*100)/100,orders:ids.size};});
     return {daily:finish(daily),skus:finish(skus)};
   }
-  function raw(files,existing=[]){
+  function raw(files,existing=[],enrichment={}){
     // Keep only an identity/status marker for excluded orders. The export timestamp
     // prevents an older completed version from restoring an excluded order.
     const all=new Map(existing.map(o=>[o.key,excludedOrder(o)?{...o,lines:[]}:o]));let invalid=0,duplicates=0,replaced=0,lines=0,older=0,excludedRows=0,platformProcessingRows=0,unpricedToShipRows=0;const errors=[],excludedKeys=new Set();
@@ -57,16 +59,18 @@
         // Warehouse processing rows can coexist with the actual priced sale under
         // the same Order No. They must never participate in sales conflict checks.
         if(excluded){excludedRows++;if(isProcessing)platformProcessingRows++;else unpricedToShipRows++;excludedKeys.add(k);if(!processing.has(k))processing.set(k,{...identity,excluded:true,lines:[]});continue;}
-        if(!batch.has(k))batch.set(k,{...identity,lines:[],lineIds:new Set()});const o=batch.get(k);
+        const customer=enrichment.order?.(r,c,p,s);
+        if(!batch.has(k))batch.set(k,{...identity,...(customer?{customer}:{}),lines:[],lineIds:new Set()});const o=batch.get(k);
+        if(customer&&o.customer)for(const field of ['buyerHash','province','country']){if(o.customer[field]&&customer[field]&&o.customer[field]!==customer[field])o.customer[field]='';}
         if(o.date!==d||o.status!==st)throw Error(`${f.name}: order ${id} has conflicting dates/statuses within the export. Resolve before importing.`);
         const lineId=c.line>=0?text(r[c.line]):'';if(lineId&&o.lineIds.has(lineId)){duplicates++;continue;}if(lineId)o.lineIds.add(lineId);
-        o.lines.push({sku,product:text(r[c.product]),price,qty});lines++;
+        o.lines.push({sku,product:text(r[c.product]),price,qty,...(enrichment.line?.(r,c)||{})});lines++;
       }
       }
       // Only processing-only identities need a marker. A real sale in this same
       // export supplies its own date/status/items, independent of file order.
       const merged=new Map([...processing,...batch]);
-      for(const [k,o] of merged){delete o.lineIds;const prior=all.get(k);if(prior?.sourceBatch&&exportBatch.stamp&&prior.sourceBatch>exportBatch.stamp){older++;continue;}if(prior){const content=x=>JSON.stringify({id:x.id,date:x.date,store:x.store,marketplaceStore:x.marketplaceStore,platform:x.platform,status:x.status,lines:x.lines});if(content(prior)===content(o)){duplicates++;if(exportBatch.stamp>String(prior.sourceBatch||''))prior.sourceBatch=exportBatch.stamp;continue;}replaced++;}if(exportBatch.stamp)o.sourceBatch=exportBatch.stamp;all.set(k,o);}
+      for(const [k,o] of merged){delete o.lineIds;const prior=all.get(k);if(prior?.sourceBatch&&exportBatch.stamp&&prior.sourceBatch>exportBatch.stamp){older++;continue;}if(prior){const content=x=>JSON.stringify({id:x.id,date:x.date,store:x.store,marketplaceStore:x.marketplaceStore,platform:x.platform,status:x.status,lines:x.lines,customer:x.customer});if(content(prior)===content(o)){duplicates++;if(exportBatch.stamp>String(prior.sourceBatch||''))prior.sourceBatch=exportBatch.stamp;continue;}replaced++;}if(exportBatch.stamp)o.sourceBatch=exportBatch.stamp;all.set(k,o);}
     }
     if(older)errors.push(`${older} older order versions were skipped because newer BigSeller exports are already imported.`);
     const records=Array.from(all.values()),orderCount=records.filter(o=>!excludedOrder(o)).length,excludedOrders=[...excludedKeys].filter(k=>excludedOrder(all.get(k))).length;return {mode:'raw',records,orderCount,...aggregate(records),diagnostics:{invalid,duplicates,replaced,older,lines,excludedRows,platformProcessingRows,unpricedToShipRows,excludedOrders,retainedSalesOrders:excludedKeys.size-excludedOrders,errors}};
