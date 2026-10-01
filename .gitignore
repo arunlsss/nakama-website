@@ -1,0 +1,16 @@
+node_modules/
+raw-orders/
+uploads/
+*.xlsx
+*.xls
+*.csv
+!tests/sample-orders.csv
+nakama-workspace-*.json
+CNAME.original
+*.before-management
+qa-mobile.html
+*.log
+
+*service-account*.json
+*credentials*.json
+.firebase/

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <link rel="icon" type="image/png" href="assets/images/logo/NAKAMA_fev.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAKAMA5666 — ค้นหาขนาดใบปัดน้ำฝน</title>
+  <meta name="description" content="ค้นหาขนาดใบปัดน้ำฝนที่เหมาะกับรถคุณ เลือกยี่ห้อและรุ่นรถ ระบบแนะนำขนาดที่ถูกต้องพร้อมลิงก์สั่งซื้อ">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/png" href="assets/images/logo/NKM B.png">
+</head>
+<body data-page="find-wiper">
+
+  <div id="navbar"></div>
+
+  <main>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="products-page-top">
+      <div class="container">
+        <div style="max-width: 760px; margin: 0 auto;">
+
+          <div class="products-page-intro">
+            <span class="section-label">WIPER SIZE FINDER</span>
+            <h1 class="products-page-h1">ใบปัดขนาดไหนเหมาะกับรถคุณ?</h1>
+            <p class="products-page-sub">เลือกยี่ห้อและรุ่นรถ — ระบบแนะนำขนาดใบปัดหน้าและหลังที่เหมาะสม</p>
+          </div>
+
+          <div class="products-page-divider"></div>
+
+          <!-- wiper.js inject ที่นี่ -->
+          <div id="wiper-finder-root"></div>
+
+          <!-- CTA -->
+          <div style="margin-top: 28px; text-align: center;">
+            <p style="color: var(--gray-400); font-size: 0.875rem; margin-bottom: 14px;">
+              ต้องการความช่วยเหลือเพิ่มเติม? ติดต่อเราผ่าน LINE Official
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <a href="products.html" class="btn btn-outline">ดูสินค้าทั้งหมด →</a>
+              <a href="https://lin.ee/sWgi73H" target="_blank" rel="noopener" class="btn btn-ghost fw-line-btn">
+                <!-- LINE_URL -->
+                <img src="assets/images/logo/LINE_New_App_Icon_(2020-12).png" alt="LINE" class="fw-line-icon">
+                LINE Official
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== ใบปัดขายดี — skewed top edge ===== -->
+    <div class="ix-skew-wrap ix-skew-wrap--diagram ix-skew-wrap--no-overlap">
+      <div class="ix-skew-panel">
+        <section class="section">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-title-block">
+                <span class="section-label">แนะนำ</span>
+                <h2>ใบปัดขายดี</h2>
+                <div class="divider-red"></div>
+              </div>
+            </div>
+            <div class="product-grid" id="wiper-products-grid"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/diagram.js"></script>
+  <script src="assets/wiper.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof loadProducts === 'function') {
+        loadProducts('wiper-products-grid', 'wiper');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <link rel="icon" type="image/png" href="assets/images/logo/NAKAMA_fev.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAKAMA5666 — สินค้าทั้งหมด</title>
+  <meta name="description" content="สินค้าดูแลรถยนต์ครบครัน ใบปัดน้ำฝน สเปรย์ดูแลรถ และชุดเซ็ตพิเศษจาก NAKAMA5666">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/png" href="assets/images/logo/NKM B.png">
+</head>
+<body data-page="products">
+
+  <div id="navbar"></div>
+
+  <main>
+
+    <section class="products-page-top">
+      <div class="container">
+
+        <!-- 3 บรรทัด แยกกัน -->
+        <div class="products-page-intro">
+          <span class="section-label">PRODUCT</span>
+          <h1 class="products-page-h1">สินค้าของเรา</h1>
+          <p class="products-page-sub">ใบปัดน้ำฝน · สเปรย์ดูแลรถ · ชุดเซ็ตสุดคุ้ม จาก NAKAMA5666</p>
+        </div>
+
+        <!-- เส้นแบ่ง -->
+        <div class="products-page-divider"></div>
+
+        <!-- 2 บรรทัด center เหนือ diagram -->
+        <div class="products-diagram-label">
+          <span class="section-label">Interactive Diagram</span>
+          <p class="products-diagram-sub">สำรวจสินค้าที่เหมาะกับแต่ละส่วนของรถ</p>
+        </div>
+
+        <!-- Diagram -->
+        <div id="diagram-full"></div>
+
+      </div>
+    </section>
+
+    <!-- ===== PRODUCTS BY CATEGORY ===== -->
+    <div id="products-sections"></div>
+
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/diagram.js"></script>
+  <script src="assets/wiper.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/main.js"></script>
+
+  <script>
+  const PRODUCTS_CONFIG = [
+    {
+      category: 'wiper',
+      label:    'ใบปัดน้ำฝน',
+      anchor:   'wiper',
+      subcategories: [
+        { key: 'standard', label: 'ใบปัดหน้า' },
+        { key: 'rear',     label: 'ใบปัดหลัง' },
+        { key: 'bundle',   label: 'ชุดเซ็ต' },
+      ]
+    },
+    {
+      category: 'spray',
+      label:    'Spray Collection',
+      anchor:   'spray',
+      subcategories: [
+        { key: 'cleaning',   label: 'ทำความสะอาด' },
+        { key: 'protect',    label: 'ป้องกัน & หล่อลื่น' },
+        { key: 'restore',    label: 'ฟื้นฟู & ขัดเงา' },
+        { key: 'stain',      label: 'กำจัดคราบ' },
+        { key: 'emergency',  label: 'ฉุกเฉิน' },
+      ]
+    },
+    ,
+    {
+      category: 'care',
+      label:    'Care Collection',
+      anchor:   'care',
+      subcategories: [
+        { key: 'cleaning',   label: 'ทำความสะอาด' },
+        { key: 'protect',    label: 'ป้องกัน & หล่อลื่น' },
+        { key: 'restore',    label: 'ฟื้นฟู & ขัดเงา' },
+        { key: 'stain',      label: 'กำจัดคราบ' },
+        { key: 'emergency',  label: 'ฉุกเฉิน' },
+      ]
+    }
+  ];
+  </script>
+
+</body>
+</html>

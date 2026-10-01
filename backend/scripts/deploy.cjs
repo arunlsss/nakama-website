@@ -1,0 +1,2 @@
+const {spawnSync}=require('node:child_process'),path=require('node:path'),args=process.argv.slice(2),i=args.indexOf('--project'),id=i>=0?args[i+1]:undefined;
+try{require('./project.cjs')(id);const r=spawnSync(process.execPath,[require.resolve('firebase-tools/lib/bin/firebase.js'),'deploy','--project',id,'--only','functions:nakama,firestore,storage'],{cwd:path.join(__dirname,'..'),stdio:'inherit',env:{...process.env,NKM_DEPLOY_PROJECT:id}});if(r.error)throw r.error;process.exitCode=r.status===null?1:r.status;}catch(e){console.error(e.message);process.exitCode=1;}

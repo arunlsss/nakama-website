@@ -1,0 +1,566 @@
+[
+  {
+    "id": "wiper-standard",
+    "name": {
+      "th": "ใบปัดน้ำฝนคู่หน้า Standard",
+      "en": "Front Wiper Blades Standard"
+    },
+    "category": "wiper",
+    "subcategory": "standard",
+    "badge": [
+      "best-seller"
+    ],
+    "image": "assets/images/merchant/wiper/main_wiper/ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ใบปัดคุณภาพสูง เกรด OEM รองรับรถยนต์ทุกรุ่น",
+      "en": "High-quality OEM-grade wiper blades compatible with all vehicle models"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "Toyota",
+          "en": "Toyota"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-TOYOTA-%E0%B9%82%E0%B8%95%E0%B9%82%E0%B8%A2%E0%B8%95%E0%B9%89%E0%B8%B2-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B9%82%E0%B8%95%E0%B9%82%E0%B8%A2%E0%B8%95%E0%B9%89%E0%B8%B2-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B9%82%E0%B8%95%E0%B9%82%E0%B8%A2%E0%B8%95%E0%B9%89%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.24587113704?extraParams=%7B%22display_model_id%22%3A272682472416%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yaKAsRHas-nQyPQ/"
+      },
+      {
+        "name": {
+          "th": "Honda",
+          "en": "Honda"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-HONDA-%E0%B8%AE%E0%B8%AD%E0%B8%99%E0%B8%94%E0%B9%89%E0%B8%B2-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%AE%E0%B8%AD%E0%B8%99%E0%B8%94%E0%B9%89%E0%B8%B2-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%AE%E0%B8%AD%E0%B8%99%E0%B8%94%E0%B9%89%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.26564149543?extraParams=%7B%22display_model_id%22%3A396033593216%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymL64qKM1-Z35Re/"
+      },
+      {
+        "name": {
+          "th": "Isuzu",
+          "en": "Isuzu"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-ISUZU-%E0%B8%AD%E0%B8%B5%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B8-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%AD%E0%B8%B5%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B8-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%AD%E0%B8%B5%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B8%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.28814154979?extraParams=%7B%22display_model_id%22%3A411033554203%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymjqruFbM-VgmWT/"
+      },
+      {
+        "name": {
+          "th": "Nissan",
+          "en": "Nissan"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-NISSAN-%E0%B8%99%E0%B8%B4%E0%B8%AA%E0%B8%AA%E0%B8%B1%E0%B8%99-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%99%E0%B8%B4%E0%B8%AA%E0%B8%AA%E0%B8%B1%E0%B8%99-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%99%E0%B8%B4%E0%B8%AA%E0%B8%AA%E0%B8%B1%E0%B8%99%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.27414166113?extraParams=%7B%22display_model_id%22%3A361033631447%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymhdrb7ML-UbfFK/"
+      },
+      {
+        "name": {
+          "th": "Mitsubishi",
+          "en": "Mitsubishi"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-MITSUBISHI-%E0%B8%A1%E0%B8%B4%E0%B8%95%E0%B8%8B%E0%B8%B9%E0%B8%9A%E0%B8%B4%E0%B8%8A%E0%B8%B4-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%A1%E0%B8%B4%E0%B8%95%E0%B8%8B%E0%B8%B9-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%A1%E0%B8%B4%E0%B8%95%E0%B8%8B%E0%B8%B9-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.29064170070?extraParams=%7B%22display_model_id%22%3A307682457466%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymrTkeTw9-Ug4GQ/"
+      },
+      {
+        "name": {
+          "th": "Mazda",
+          "en": "Mazda"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-MAZDA-%E0%B8%A1%E0%B8%B2%E0%B8%AA%E0%B8%94%E0%B9%89%E0%B8%B2-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%A1%E0%B8%B2%E0%B8%AA%E0%B8%94%E0%B9%89%E0%B8%B2-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%A1%E0%B8%B2%E0%B8%AA%E0%B8%94%E0%B9%89%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.28664158976?extraParams=%7B%22display_model_id%22%3A391033618413%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymB4A9pab-c3826/"
+      },
+      {
+        "name": {
+          "th": "Suzuki",
+          "en": "Suzuki"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-SUZUKI-%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B9%E0%B8%81%E0%B8%B4-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B9%E0%B8%81%E0%B8%B4-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%8B%E0%B8%B9%E0%B8%8B%E0%B8%B9%E0%B8%81%E0%B8%B4%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%96%E0%B8%B9%E0%B8%81-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.29564171054?extraParams=%7B%22display_model_id%22%3A326033615730%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymABPTtEW-G7Wez/"
+      },
+      {
+        "name": {
+          "th": "MG",
+          "en": "MG"
+        },
+        "shopee_url": "https://shopee.co.th/NAKAMA-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99-MG-%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%A1%E0%B8%88%E0%B8%B5-%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%A1%E0%B8%88%E0%B8%B5-%E0%B8%81%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%A1%E0%B8%88%E0%B8%B5-Wiper-Blade-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%AD-U-Hook-%E0%B9%80%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%B1%E0%B9%89%E0%B8%99-i.1265119257.28874781593?extraParams=%7B%22display_model_id%22%3A361033624053%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96ymyq5xmAe-dLyAX/"
+      }
+    ]
+  },
+  {
+    "id": "spray-contact-cleaner",
+    "name": {
+      "th": "Contact Cleaner",
+      "en": "Contact Cleaner"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [
+      "best-seller"
+    ],
+    "image": "assets/images/merchant/spray/01.ContactCleaner/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "สเปรย์ทำความสะอาดแผงวงจรไฟฟ้า ไล่ความชื้น",
+      "en": "Electronic circuit board cleaner spray, moisture repellent"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B9%82%E0%B8%9F%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%A3%E0%B8%96%E0%B8%A2%E0%B8%99%E0%B8%95%E0%B9%8C%E0%B8%97%E0%B8%B3%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AA%E0%B8%B0%E0%B8%AD%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%8B%E0%B9%87%E0%B8%99%E0%B9%80%E0%B8%8B%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%A1%E0%B8%9C%E0%B8%B1%E0%B8%AA%E0%B8%97%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%9F%E0%B8%9F%E0%B9%89%E0%B8%B2-%E0%B9%81%E0%B8%9C%E0%B8%87%E0%B8%A7%E0%B8%87%E0%B8%88%E0%B8%A3-Nakama-Contact-Cleaner-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-i.1265119257.55612729703?extraParams=%7B%22display_model_id%22%3A118791109432%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yuwy9rvCB-vO8Bc/"
+      }
+    ]
+  },
+  {
+    "id": "spray-sticker-remover",
+    "name": {
+      "th": "Sticker Remover",
+      "en": "Sticker Remover"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [
+      "best-seller"
+    ],
+    "image": "assets/images/merchant/spray/02.StickerRemover/ปกไม่เตือน.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "กำจัดคราบสติกเกอร์และกาวสูตรเข้มข้นพิเศษ",
+      "en": "Concentrated formula for removing sticker residue and adhesive"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%82%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%81%E0%B8%B2%E0%B8%A7%E0%B8%AD%E0%B9%80%E0%B8%99%E0%B8%81%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%A5%E0%B8%AD%E0%B8%81%E0%B8%81%E0%B8%B2%E0%B8%A7-%E0%B9%80%E0%B8%97%E0%B8%9B-%E0%B8%AA%E0%B8%95%E0%B8%B4%E0%B9%8A%E0%B8%81%E0%B9%80%E0%B8%81%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B9%80%E0%B8%AB%E0%B8%99%E0%B8%B5%E0%B8%A2%E0%B8%A7-Sticker-Remover-Nakama-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-i.1265119257.40982013411?extraParams=%7B%22display_model_id%22%3A316110432893%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yuTeTYX4K-IM5yE/"
+      }
+    ]
+  },
+  {
+    "id": "spray-brake-cleaner",
+    "name": {
+      "th": "Brake Cleaner",
+      "en": "Brake Cleaner"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [
+      "best-seller"
+    ],
+    "image": "assets/images/merchant/spray/03.BrakeCleaner/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ทำความสะอาดจานเบรค ผ้าเบรค คาลิปเปอร์",
+      "en": "Cleans brake discs, brake pads, and calipers"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%97%E0%B8%B3%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AA%E0%B8%B0%E0%B8%AD%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%9A%E0%B8%A3%E0%B8%84-%E0%B8%89%E0%B8%B5%E0%B8%94%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%9A%E0%B9%80%E0%B8%9A%E0%B8%A3%E0%B8%84-Brake-Cleaner-Nakama-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-i.1265119257.44512765008?extraParams=%7B%22display_model_id%22%3A361106237645%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yuwAnbUKC-wOi5r/"
+      }
+    ]
+  },
+  {
+    "id": "spray-engine-degreaser",
+    "name": {
+      "th": "Engine Degreaser",
+      "en": "Engine Degreaser"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [],
+    "image": "assets/images/merchant/spray/04.EngineDegreaser/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "สเปรย์ล้างคราบน้ำมันห้องเครื่อง สูตรเข้มข้น",
+      "en": "Concentrated spray for removing engine bay oil and grease"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%AB%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%84%E0%B8%A3%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%87-%E0%B8%82%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%A1%E0%B8%B1%E0%B8%99-%E0%B8%88%E0%B8%B2%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%B5%E0%B8%AA%E0%B8%B4%E0%B9%88%E0%B8%87%E0%B8%AA%E0%B8%81%E0%B8%9B%E0%B8%A3%E0%B8%81-Engine-Degreaser-Nakama-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-500-ml-i.1265119257.51762724878?extraParams=%7B%22display_model_id%22%3A356106242051%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHeVQYdUG-rTNPY/"
+      }
+    ]
+  },
+  {
+    "id": "spray-carb-cleaner",
+    "name": {
+      "th": "Carb Cleaner",
+      "en": "Carb Cleaner"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [],
+    "image": "assets/images/merchant/spray/05.CarbCleaner/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ล้างคาร์บูเรเตอร์ แห้งไว ไม่ทิ้งคราบ",
+      "en": "Carburetor cleaner — fast drying, leaves no residue"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/Nakama-Carb-Cleaner-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-%E0%B8%97%E0%B8%B3%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AA%E0%B8%B0%E0%B8%AD%E0%B8%B2%E0%B8%94%E0%B8%84%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%9A%E0%B8%B9%E0%B9%80%E0%B8%A3%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%97%E0%B8%B3%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AA%E0%B8%B0%E0%B8%AD%E0%B8%B2%E0%B8%94%E0%B8%A5%E0%B8%B4%E0%B9%89%E0%B8%99%E0%B8%9B%E0%B8%B5%E0%B8%81%E0%B8%9C%E0%B8%B5%E0%B9%80%E0%B8%AA%E0%B8%B7%E0%B9%89%E0%B8%AD-i.1265119257.28524107078?extraParams=%7B%22display_model_id%22%3A242514624074%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yH8JBm6eW-VnPkx/"
+      }
+    ]
+  },
+  {
+    "id": "spray-derust",
+    "name": {
+      "th": "De-rust & Lubricating",
+      "en": "De-rust & Lubricating"
+    },
+    "category": "spray",
+    "subcategory": "protect",
+    "badge": [],
+    "image": "assets/images/merchant/spray/06.DerustLubricating/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "กำจัดสนิม หล่อลื่น ป้องกันความชื้น",
+      "en": "Removes rust, lubricates, and protects against moisture"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%AB%E0%B8%A5%E0%B9%88%E0%B8%AD%E0%B8%A5%E0%B8%B7%E0%B9%88%E0%B8%99-%E0%B8%9B%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%AA%E0%B8%99%E0%B8%B4%E0%B8%A1-%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%AD%E0%B9%80%E0%B8%99%E0%B8%81%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B9%8C-Nakama-De-Rust-Lubricating-Spray-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-i.1265119257.50862738379?extraParams=%7B%22display_model_id%22%3A346106241982%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHFDKu5TT-bRnAa/"
+      }
+    ]
+  },
+  {
+    "id": "spray-pitch-spot",
+    "name": {
+      "th": "Pitch & Spot",
+      "en": "Pitch & Spot"
+    },
+    "category": "spray",
+    "subcategory": "stain",
+    "badge": [],
+    "image": "assets/images/merchant/spray/07.PitchSpot/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ขจัดคราบยางมะตอย คราบเหนียวบนสีรถ",
+      "en": "Removes tar, pitch, and sticky residue from car paint"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/Nakama-Pitch-Spot-Cleaner-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml-%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%B0%E0%B8%95%E0%B8%AD%E0%B8%A2-%E0%B8%82%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%A0%E0%B8%B2%E0%B8%A2%E0%B8%99%E0%B8%AD%E0%B8%81%E0%B8%A3%E0%B8%96-%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%AA%E0%B8%B5-%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%B0%E0%B8%95%E0%B8%AD%E0%B8%A2-i.1265119257.27774106751?extraParams=%7B%22display_model_id%22%3A39863509176%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHjDY8FX6-3PnxE/"
+      }
+    ]
+  },
+  {
+    "id": "spray-tire-sealer",
+    "name": {
+      "th": "Tire Sealer",
+      "en": "Tire Sealer"
+    },
+    "category": "spray",
+    "subcategory": "emergency",
+    "badge": [],
+    "image": "assets/images/merchant/spray/08.TireSealer/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ปะยางฉุกเฉิน เติมลมในตัว ไม่ต้องถอดล้อ",
+      "en": "Emergency flat tire fix with built-in inflation — no wheel removal needed"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%B0%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%89%E0%B8%B8%E0%B8%81%E0%B9%80%E0%B8%89%E0%B8%B4%E0%B8%99-%E0%B9%80%E0%B8%95%E0%B8%B4%E0%B8%A1%E0%B8%A5%E0%B8%A1-%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%A3%E0%B8%B1%E0%B9%88%E0%B8%A7-%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%9A%E0%B8%99-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%A3%E0%B8%96%E0%B8%A2%E0%B8%99%E0%B8%95%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%81%E0%B8%A3%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B8%A2%E0%B8%99%E0%B8%95%E0%B9%8C-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%99-Nakama-Tire-Sealer-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450ml-i.1265119257.55212736262?extraParams=%7B%22display_model_id%22%3A401106233752%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yH6X5DWJS-6XeBb/"
+      }
+    ]
+  },
+  {
+    "id": "spray-tire-shine",
+    "name": {
+      "th": "Tire Shine",
+      "en": "Tire Shine"
+    },
+    "category": "spray",
+    "subcategory": "restore",
+    "badge": [],
+    "image": "assets/images/merchant/spray/09.TireShine/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "เคลือบเงายาง ฟื้นฟูความดำ ป้องกัน UV",
+      "en": "Tire coating that restores deep black shine and protects against UV"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/Nakama-Tire-Shine-%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B9%80%E0%B8%84%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%9A%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%94%E0%B8%B3-%E0%B8%82%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A-%E0%B9%80%E0%B8%84%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%9A%E0%B9%80%E0%B8%87%E0%B8%B2%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%94%E0%B8%B3-i.1265119257.41672552087?extraParams=%7B%22display_model_id%22%3A186296670885%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHkH1TsWV-RX1uN/"
+      }
+    ]
+  },
+  {
+    "id": "spray-plastic-restore",
+    "name": {
+      "th": "Plastic Restore",
+      "en": "Plastic Restore"
+    },
+    "category": "spray",
+    "subcategory": "restore",
+    "badge": [],
+    "image": "assets/images/merchant/spray/10.PlasticRestore/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "บำรุงและฟื้นฟูผิวพลาสติกที่ซีดจาง",
+      "en": "Nourishes and restores faded plastic surfaces"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/Nakama-Plastic-Restore-%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B9%80%E0%B8%84%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%9A%E0%B8%9E%E0%B8%A5%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%B4%E0%B8%81-%E0%B9%80%E0%B8%84%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%9A%E0%B9%80%E0%B8%87%E0%B8%B2%E0%B8%A3%E0%B8%96-%E0%B8%9F%E0%B8%B7%E0%B9%89%E0%B8%99%E0%B8%9F%E0%B8%B9%E0%B8%AA%E0%B8%B5%E0%B8%88%E0%B8%B2%E0%B8%87-%E0%B8%9E%E0%B8%A5%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%B4%E0%B8%81%E0%B8%8B%E0%B8%B5%E0%B8%94-%E0%B8%9E%E0%B8%A5%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%B4%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B9%88%E0%B8%99%E0%B8%81%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B8%A1%E0%B8%B2%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88-%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B9%84%E0%B8%94%E0%B9%89%E0%B8%97%E0%B8%B8%E0%B8%81%E0%B8%9E%E0%B8%B7%E0%B9%89%E0%B8%99%E0%B8%9C%E0%B8%B4%E0%B8%A7-i.1265119257.40875376075?extraParams=%7B%22display_model_id%22%3A302057413675%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHBsv6hWc-B3HQq/"
+      }
+    ]
+  },
+  {
+    "id": "spray-helmet-foam",
+    "name": {
+      "th": "Helmet Foam",
+      "en": "Helmet Foam"
+    },
+    "category": "spray",
+    "subcategory": "cleaning",
+    "badge": [],
+    "image": "assets/images/merchant/spray/11.HelmetFoam/2026/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ล้างหมวกกันน็อค กลิ่นหอม แห้งไว",
+      "en": "Helmet interior cleaner — fresh scent, fast drying"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A2%E0%B9%8C%E0%B8%97%E0%B8%B3%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AA%E0%B8%B0%E0%B8%AD%E0%B8%B2%E0%B8%94%E0%B8%AB%E0%B8%A1%E0%B8%A7%E0%B8%81%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%99%E0%B9%87%E0%B8%AD%E0%B8%84-%E0%B8%81%E0%B8%B3%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%A5%E0%B8%B4%E0%B9%88%E0%B8%99%E0%B8%AD%E0%B8%B1%E0%B8%9A-%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B9%80%E0%B8%AB%E0%B8%87%E0%B8%B7%E0%B9%88%E0%B8%AD-%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B9%88%E0%B8%B2%E0%B8%A2-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%95%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%99%E0%B9%89%E0%B8%B3-Nakama-Helmet-Foam-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-450-ml.-i.1265119257.51962740001?extraParams=%7B%22display_model_id%22%3A441106245554%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHPWGv6Qx-4xWBL/"
+      }
+    ]
+  },
+  {
+    "id": "glass-restore",
+    "name": {
+      "th": "Glass Restore",
+      "en": "Glass Restore"
+    },
+    "category": "care",
+    "subcategory": "restore",
+    "badge": [],
+    "image": "assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "น้ำยาขัดกระจก ขจัดคราบน้ำ คราบหินปูน",
+      "en": "Glass polish that removes water spots and mineral deposits"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%A2%E0%B8%B2%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%81%E0%B8%A3%E0%B8%96-%E0%B8%A5%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B8%99%E0%B9%89%E0%B8%B3-%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%9B%E0%B8%B9%E0%B8%99-%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%9D%E0%B8%B1%E0%B8%87%E0%B9%81%E0%B8%99%E0%B9%88%E0%B8%99-%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%81%E0%B9%83%E0%B8%AA-Nakama-Glass-Restore-i.1265119257.48462817015?extraParams=%7B%22display_model_id%22%3A416109867231%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHxACL59m-hC3Ha/"
+      }
+    ]
+  },
+  {
+    "id": "headlight-restoration",
+    "name": {
+      "th": "Headlight Restoration",
+      "en": "Headlight Restoration"
+    },
+    "category": "care",
+    "subcategory": "restore",
+    "badge": [],
+    "image": "assets/images/merchant/spray/13.HeadlightRestoration/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ครีมขัดไฟหน้า ฟื้นฟูไฟหน้าเหลือง ป้องกัน UV",
+      "en": "Headlight restoration cream — clears yellowing and guards against UV"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%84%E0%B8%A3%E0%B8%B5%E0%B8%A1%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B9%84%E0%B8%9F%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2%E0%B8%A3%E0%B8%96-%E0%B8%9F%E0%B8%B7%E0%B9%89%E0%B8%99%E0%B8%9F%E0%B8%B9%E0%B9%84%E0%B8%9F%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87-%E0%B8%AB%E0%B8%A1%E0%B8%AD%E0%B8%87-%E0%B8%9B%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A3%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B5-UV-Nakama-Headlight-Restoration-i.1265119257.51912777909?extraParams=%7B%22display_model_id%22%3A366109861768%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHQKhB4K6-sKT1t/"
+      }
+    ]
+  },
+  {
+    "id": "scratch-remover",
+    "name": {
+      "th": "Scratch Remover",
+      "en": "Scratch Remover"
+    },
+    "category": "care",
+    "subcategory": "restore",
+    "badge": [],
+    "image": "assets/images/merchant/spray/14.ScratchRemover/เดี่ยว ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "น้ำยาลบรอยขีดข่วน คืนความเงาให้สีรถ",
+      "en": "Scratch remover that restores paint gloss and clarity"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%A2-%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B8%82%E0%B8%B5%E0%B8%94%E0%B8%82%E0%B9%88%E0%B8%A7%E0%B8%99-%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%94-%E0%B8%82%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B8%82%E0%B8%B5%E0%B8%94%E0%B8%82%E0%B9%88%E0%B8%A7%E0%B8%99-Nakama-Scratch-Remover-i.1265119257.52512777957?extraParams=%7B%22display_model_id%22%3A331109862054%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHXk8mBkD-TUIZR/"
+      }
+    ]
+  },
+  {
+    "id": "wiper-rear",
+    "name": {
+      "th": "ใบปัดน้ำฝนหลัง",
+      "en": "Rear Wiper Blade"
+    },
+    "category": "wiper",
+    "subcategory": "rear",
+    "badge": [],
+    "image": "assets/images/merchant/wiper/rear_wiper/ปก.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ใบปัดหลัง รองรับรถ SUV และ Hatchback",
+      "en": "Rear wiper blade compatible with SUV and Hatchback models"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "1 ชิ้น",
+          "en": "1 Pcs"
+        },
+        "shopee_url": "https://shopee.co.th/%E0%B9%83%E0%B8%9A%E0%B8%9B%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9D%E0%B8%99%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87-%E0%B9%80%E0%B8%89%E0%B8%9E%E0%B8%B2%E0%B8%B0%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99-%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%87%E0%B8%87%E0%B9%88%E0%B8%B2%E0%B8%A2-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%95%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%AD%E0%B8%B0%E0%B9%81%E0%B8%94%E0%B8%9B%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C-NAKAMA-i.1265119257.45962822441?extraParams=%7B%22display_model_id%22%3A267727033120%2C%22model_selection_logic%22%3A3%7D",
+        "tiktok_url": "https://vt.tiktok.com/ZS96yHgX87eNo-mVUYF/"
+      }
+    ]
+  },
+  {
+    "id": "set-wiper-01",
+    "name": {
+      "th": "เซ็ต ใบปัด + หัวเชื้อน้ำยาฉีดกระจก",
+      "en": "Bundle: Wiper + Windshield Washer"
+    },
+    "category": "set",
+    "subcategory": "bundle",
+    "badge": [],
+    "image": "assets/images/merchant/wiper/main_wiper/set01/TOYOTA.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ชุดเซ็ตคุ้มค่า ใบปัดคู่หน้า + หัวเชื้อน้ำยาฉีดกระจก",
+      "en": "Value bundle: front wiper pair + Windshield Washer"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "Toyota",
+          "en": "Toyota"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      },
+      {
+        "name": {
+          "th": "Honda",
+          "en": "Honda"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      },
+      {
+        "name": {
+          "th": "Mitsubishi",
+          "en": "Mitsubishi"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      }
+    ]
+  },
+  {
+    "id": "set-wiper-02",
+    "name": {
+      "th": "เซ็ต ใบปัด + ผ้าขนแกะหนา 1500 แกรม",
+      "en": "Bundle: Wiper + SuperDry1500G"
+    },
+    "category": "set",
+    "subcategory": "bundle",
+    "badge": [],
+    "image": "assets/images/merchant/wiper/main_wiper/set02/Toyota.png",
+    "shopee_url": "#",
+    "description": {
+      "th": "ชุดเซ็ตคุ้มค่า ใบปัดคู่หน้า + ผ้าขนแกะหนา 1500 แกรม",
+      "en": "Value bundle: front wiper pair + SuperDry1500G"
+    },
+    "variants": [
+      {
+        "name": {
+          "th": "Toyota",
+          "en": "Toyota"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      },
+      {
+        "name": {
+          "th": "Honda",
+          "en": "Honda"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      },
+      {
+        "name": {
+          "th": "Mitsubishi",
+          "en": "Mitsubishi"
+        },
+        "shopee_url": "#",
+        "tiktok_url": "#"
+      }
+    ]
+  }
+]

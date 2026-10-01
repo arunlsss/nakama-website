@@ -1,0 +1,1 @@
+const path=require('node:path');require('esbuild').buildSync({entryPoints:[path.join(__dirname,'cloud-sdk-source.mjs')],outfile:path.join(__dirname,'../../assets/vendor/firebase-sdk.js'),bundle:true,minify:true,format:'esm',platform:'browser',target:['es2020'],legalComments:'eof'});

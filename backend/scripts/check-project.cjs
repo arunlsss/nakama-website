@@ -1,0 +1,1 @@
+const actual=process.env.GCLOUD_PROJECT;require('./project.cjs')(actual);if(process.env.NKM_DEPLOY_PROJECT&&process.env.NKM_DEPLOY_PROJECT!==actual)throw Error('Firebase selected a different deployment project.');

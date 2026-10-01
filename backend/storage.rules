@@ -1,0 +1,21 @@
+rules_version = '2';
+service firebase.storage {
+ match /b/{bucket}/o {
+  function importer(uid) {
+   return request.auth != null && request.auth.uid == uid
+    && request.auth.token.nakamaRole in ['importer','admin']
+    && firestore.get(/databases/(default)/documents/members/$(uid)).data.enabled == true
+    && firestore.get(/databases/(default)/documents/members/$(uid)).data.role == request.auth.token.nakamaRole;
+  }
+  match /uploads/{uid}/{importId}/{fileIndex} {
+   function job() { return firestore.get(/databases/(default)/documents/imports/$(importId)).data; }
+   allow write: if resource == null && request.resource != null && importer(uid)
+    && job().owner == uid && job().state == 'uploading' && request.time < job().expiresAt
+    && fileIndex in job().files && request.resource.size == job().files[fileIndex].size
+    && request.resource.size <= 32 * 1024 * 1024
+    && request.resource.contentType == job().files[fileIndex].contentType;
+   allow read: if false;
+  }
+  match /{path=**} { allow read, write: if false; }
+ }
+}

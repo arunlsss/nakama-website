@@ -1,0 +1,9 @@
+{
+  "name": "nakama-management-website",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "dev": "node dev-server.cjs",
+    "test": "node tests/engine.test.cjs && node backend/tests/core.test.cjs"
+  }
+}

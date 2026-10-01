@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <link rel="icon" type="image/png" href="assets/images/logo/NAKAMA_fev.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAKAMA5666 — ผลิตภัณฑ์ดูแลรถยนต์คุณภาพสูง</title>
+  <meta name="description" content="ใบปัดน้ำฝน สเปรย์ดูแลรถ และอุปกรณ์เสริมรถยนต์คุณภาพสูงจาก NAKAMA5666">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/png" href="assets/images/logo/NKM B.png">
+</head>
+<body data-page="home">
+
+  <div id="navbar"></div>
+
+  <main>
+
+    <!-- ===== HERO SLIDER ===== -->
+    <section class="hero-slider" id="hero-slider">
+      <div class="hero-arrows">
+        <button class="hero-arrow" id="hero-prev" aria-label="Slide ก่อนหน้า"><</button>
+        <button class="hero-arrow" id="hero-next" aria-label="Slide ถัดไป">></button>
+      </div>
+      <div class="hero-dots" id="hero-dots"></div>
+    </section>
+
+
+    <!-- ===== DIAGRAM TEASER — skewed top edge ===== -->
+    <div class="ix-skew-wrap ix-skew-wrap--diagram">
+      <div class="ix-skew-panel">
+        <section class="section">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-title-block">
+                <span class="section-label">Interactive Diagram</span>
+                <h2>สินค้า NAKAMA ใช้กับส่วนไหนของรถ?</h2>
+                <div class="divider-red"></div>
+              </div>
+            </div>
+            <div id="diagram-teaser-stage"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- ===== BEST SELLERS ===== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title-block">
+            <span class="section-label">สินค้าขายดี</span>
+            <h2>Best Sellers</h2>
+            <div class="divider-red"></div>
+          </div>
+          <a href="products.html" class="btn btn-outline">ดูสินค้าทั้งหมด →</a>
+        </div>
+        <div class="product-grid" id="best-sellers-grid">
+          <div class="product-card" style="opacity:0.4">
+            <div class="product-card-img" style="background:var(--gray-700)"></div>
+            <div class="product-card-body"><p class="product-card-name">กำลังโหลด...</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== SPRAY COLLECTION — skewed top + bottom ===== -->
+    <div class="ix-skew-wrap ix-skew-wrap--spray">
+      <div class="ix-skew-panel">
+        <section class="section">
+          <div class="container">
+            <div class="spray-section-intro">
+              <div class="section-title-block">
+                <span class="section-label">Spray &amp; Care Collection</span>
+                <h2>ผลิตภัณฑ์ดูแลรถ 14 สูตร</h2>
+                <div class="divider-red"></div>
+                <p>ครบทุกความต้องการในการดูแลรถยนต์ ตั้งแต่ทำความสะอาด ป้องกัน ไปจนถึงฟื้นฟู กดที่สินค้าเพื่อดูรายละเอียดและเลือกซื้อ</p>
+              </div>
+              <a href="products.html#spray" class="btn btn-outline">ดูสเปรย์ทั้งหมด →</a>
+            </div>
+            <div class="spray-grid" id="spray-highlight-list"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- ===== CTA BANNER — FIND WIPER — skewed wrap ===== -->
+    <div class="ix-skew-wrap ix-skew-wrap--cta">
+      <div class="ix-skew-panel">
+        <section class="section">
+          <div class="container">
+            <div class="cta-banner">
+              <div>
+                <h2>ไม่รู้ขนาดใบปัดรถคุณ?</h2>
+                <p>กรอกยี่ห้อและรุ่นรถ — ระบบค้นหาขนาดใบปัดที่เหมาะสมให้เลย</p>
+              </div>
+              <a href="find-wiper.html" class="btn-white">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="11" cy="11" r="8"/>
+  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+</svg>  ค้นหาขนาดใบปัด
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/diagram.js"></script>
+  <script src="assets/wiper.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/main.js"></script>
+</body>
+</html>

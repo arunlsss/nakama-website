@@ -1,0 +1,20 @@
+{
+  "name": "nakama-backend-tools",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/core.test.cjs && node tests/ui.test.cjs && node tests/deployment.test.cjs",
+    "test:emulators": "node scripts/emulator-tests.cjs",
+    "configure": "node scripts/configure.cjs",
+    "deploy": "node scripts/deploy.cjs",
+    "grant-role": "node scripts/grant-role.cjs",
+    "build:sdk": "node scripts/build-sdk.cjs"
+  },
+  "devDependencies": {
+    "firebase-tools": "15.32.0",
+    "firebase": "12.19.0",
+    "@firebase/rules-unit-testing": "5.0.2",
+    "esbuild": "0.28.2",
+    "jsdom": "28.1.0"
+  }
+}
