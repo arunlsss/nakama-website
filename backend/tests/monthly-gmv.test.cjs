@@ -1,0 +1,25 @@
+const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{JSDOM}=require('jsdom'),root=path.resolve(__dirname,'../..');
+const summary=month=>({mode:'raw',records:[],revision:'r1',month,diagnostics:{sourceUnverified:false},daily:[{date:month+'-01',month,store:'NKM_SHP',platform:'Shopee',status:'Completed',gmv:100,orders:1,units:2}],skus:[{date:month+'-01',month,store:'NKM_SHP',platform:'Shopee',status:'Completed',sku:'W24',product:'Wiper',gmv:100,orders:1,units:2}]}),flush=()=>new Promise(r=>setTimeout(r,10));
+function harness(mock,settings={}){const dom=new JSDOM(fs.readFileSync(path.join(root,'management.html'),'utf8'),{url:'http://localhost/management.html',runScripts:'outside-only'}),w=dom.window,ctx=dom.getInternalVMContext();const media={matches:settings.dark===true,addEventListener:(event,fn)=>{media.listener=fn;}};w.matchMedia=()=>media;w.scrollTo=()=>{};if(settings.savedTheme)w.localStorage.setItem('nakama-theme',settings.savedTheme);w.cloudMock=mock;for(const f of ['engine.js','store-labels.js','report.js','charts.js','insights.js','insight-ui.js','theme.js','monthly-gmv.js'])vm.runInContext(fs.readFileSync(path.join(root,'assets',f),'utf8'),ctx);const src=fs.readFileSync(path.join(root,'assets/management.js'),'utf8').split("import('./cloud.js")[0];vm.runInContext(src+'\ncloud=cloudMock;',ctx);return {dom,w,ctx,media};}
+
+test('monthly totals include all stores and statuses, preserve gaps and require a nonzero previous calendar month',()=>{
+ const {dom,w}=harness({pendingImport:()=>null});const report=(m,values)=>({daily:values.map(([status,gmv,store])=>({date:m+'-01',status,gmv,store:store||'NKM_SHP'}))});
+ const reports=new Map([['2025-12',report('2025-12',[['Completed',100]])],['2026-01',report('2026-01',[['Completed',100],['Canceled',40,'OTHER'],['Return & Refund',10],['Platform Processing',900]])],['2026-03',report('2026-03',[['Completed',0]])],['2026-04',report('2026-04',[['Completed',100]])],['2026-05',{failed:true}],['2026-06',report('2026-06',[['Completed',200]])]]);
+ const rows=w.NKMMonthlyGMV.aggregate([...reports.keys()],reports,'2026-06-10');
+ a.equal(rows[1].gmv,150);a.equal(rows[1].growth,50);a.equal(rows[2].gmv,null);a.equal(rows[3].growth,null);a.equal(rows[4].growthLabel,'No baseline');a.equal(rows[5].growthLabel,'Report unavailable');a.equal(rows[6].growth,null);a.equal(rows[6].partial,true);dom.window.close();
+});
+test('top chart loads every month and stays unchanged across date and business filters; refresh loads new revisions',async()=>{
+ let revision='r1';const calls=[],mock={pendingImport:()=>null,workspace:async()=>({role:'viewer',revision,months:['2026-07','2026-08','2026-09']}),history:async()=>[],loadMonth:async(s,m,opt)=>{calls.push([s.revision,m,opt?.dailyOnly]);const report=summary(m);report.daily.push({...report.daily[0],store:'OTHER',status:'Canceled',gmv:s.revision==='r2'?100:50});return report;}};
+ const {dom,w,ctx}=harness(mock),el=id=>w.document.getElementById(id);vm.runInContext("sessionChanged({user:{uid:'test'},role:'viewer'});",ctx);await flush();
+ a.equal(el('monthly-gmv').hidden,false);a.equal(w.document.querySelectorAll('[data-month]').length,3);a.ok(calls.some(c=>c[1]==='2026-07'&&c[2]===true));
+ const before=el('monthly-gmv').innerHTML;for(const [id,value] of [['sales-basis','completed'],['store','NKM_SHP'],['platform','Shopee'],['status','Completed'],['month','2026-08']]){el(id).value=value;el(id).dispatchEvent(new w.Event('change'));await flush();a.equal(el('monthly-gmv').innerHTML,before);}
+ w.document.querySelector('[data-view="sources"]').click();a.equal(el('monthly-gmv').hidden,false);a.equal(el('monthly-gmv').innerHTML,before);
+ revision='r2';el('refresh').click();await flush();a.equal(w.document.querySelector('[data-month="2026-07"]').dataset.gmv,'200');
+ vm.runInContext('sessionChanged(null);',ctx);a.equal(el('monthly-gmv').hidden,true);a.equal(el('monthly-gmv').querySelector('[data-monthly-chart]').textContent,'');dom.window.close();
+});
+test('failed reports retry and late responses after signout are discarded',async()=>{
+ const {dom,w}=harness({pendingImport:()=>null}),el=w.document.getElementById('monthly-gmv'),controller=w.NKMMonthlyGMV.create(el),state={revision:'r',months:['2026-08','2026-09']};
+ await controller.load({loadMonth:async(s,m)=>{if(m==='2026-08')throw Error('Unavailable');return summary(m);}},state);a.match(el.textContent,/Some reports could not load/);a.match(el.querySelector('[data-month="2026-09"]').textContent,/Prior unavailable/);
+ await controller.load({loadMonth:async(s,m)=>summary(m)},state);a.match(el.querySelector('[data-month="2026-09"]').textContent,/0.0%/);
+ const finishes=[];const pending=controller.load({loadMonth:()=>new Promise(r=>finishes.push(r))},state);controller.clear();finishes.forEach(r=>r(summary('2026-08')));await pending;a.equal(el.hidden,true);a.equal(el.querySelector('[data-monthly-chart]').textContent,'');dom.window.close();
+});
