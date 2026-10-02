@@ -26,3 +26,14 @@ npm test
 Open `http://localhost:4173/management.html`. Cloud configuration for `nakama-sales` is included; deploy the backend and grant access before signing in. Backend setup and tests are in CLOUD-DEPLOYMENT.md.
 
 The archive includes images referenced by the website. It excludes unused source photography, raw customer exports, node_modules, credentials, original-domain CNAME and the legacy Apps Script backend.
+
+### Partially canceled export orders
+
+A single order can contain different completed and canceled SKUs. Raw imports preserve the status on each item. Completed or active sales and stock demand exclude canceled items. All order value includes both item values. The daily order total counts a partially canceled order once as completed; the canceled order count covers fully canceled orders. Product order counts describe orders containing each SKU. Conflicting dates, contradictory statuses for the same SKU, or other mixed lifecycle statuses still block import for review.
+
+After updating the backend, deploy the three consumers before importing such orders:
+
+```bash
+cd backend
+npx firebase deploy --only functions:nakama:nkmProcessImport,functions:nakama:nkmCustomerInsights,functions:nakama:nkmStockDemand --project nakama-sales
+```

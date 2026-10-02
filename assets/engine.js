@@ -32,8 +32,10 @@
   const key=parts=>JSON.stringify(parts);
   function aggregate(records){
     const daily=new Map(), skus=new Map();
-    function add(map,k,row,id){if(!map.has(k))map.set(k,{...row,gmv:0,units:0,ids:new Set()});const v=map.get(k);v.gmv+=row.gmv;v.units+=row.units;v.ids.add(id);}
-    for(const o of records){if(excludedOrder(o))continue;for(const l of o.lines){const row={date:o.date,month:o.date.slice(0,7),store:o.store,marketplaceStore:o.marketplaceStore,platform:o.platform,status:o.status,gmv:l.price*l.qty,units:l.qty};add(daily,key([o.date,o.store,o.platform,o.status]),row,o.key);const sizes=l.sku.match(/(\d+)\s*\/\s*(\d+)/);add(skus,key([row.month,o.store,o.platform,o.status,l.sku,l.product]),{...row,date:row.month+'-01',sku:l.sku,product:l.product,size1:sizes?.[1]||'',size2:sizes?.[2]||''},o.key);}}
+    function add(map,k,row,id){if(!map.has(k))map.set(k,{...row,gmv:0,units:0,ids:new Set()});const v=map.get(k);v.gmv+=row.gmv;v.units+=row.units;if(id)v.ids.add(id);}
+    // Count a partially canceled order once as completed. Item values retain
+    // their own statuses; SKU order counts describe orders containing that SKU.
+    for(const o of records){if(excludedOrder(o))continue;for(const l of o.lines){const row={date:o.date,month:o.date.slice(0,7),store:o.store,marketplaceStore:o.marketplaceStore,platform:o.platform,status:l.status||o.status,gmv:l.price*l.qty,units:l.qty};add(daily,key([o.date,o.store,o.platform,row.status]),row,row.status===o.status?o.key:null);const sizes=l.sku.match(/(\d+)\s*\/\s*(\d+)/);add(skus,key([row.month,o.store,o.platform,row.status,l.sku,l.product]),{...row,date:row.month+'-01',sku:l.sku,product:l.product,size1:sizes?.[1]||'',size2:sizes?.[2]||''},o.key);}}
     const finish=map=>Array.from(map.values(),v=>{const {ids,...rest}=v;return {...rest,gmv:Math.round(v.gmv*100)/100,orders:ids.size};});
     return {daily:finish(daily),skus:finish(skus)};
   }
@@ -63,18 +65,24 @@
         const source={file:f.name,row:i+2,date:d,status:st,orderTime:text(r[c.date]),orderStatus:text(r[c.status]),store:text(r[c.store]),marketplaceStore:identity.marketplaceStore,sku};
         if(!batch.has(k)){batch.set(k,{...identity,...(customer?{customer}:{}),lines:[],lineIds:new Set()});sources.set(k,source);}const o=batch.get(k);
         if(customer&&o.customer)for(const field of ['buyerHash','province','country']){if(o.customer[field]&&customer[field]&&o.customer[field]!==customer[field])o.customer[field]='';}
-        if(o.date!==d||o.status!==st){const first=sources.get(k),error=Error(`Order ${id} has conflicting dates/statuses within the export. ${first.file}, row ${first.row}: ${first.date} / ${first.status}; ${f.name}, row ${i+2}: ${d} / ${st}. Check Order Time and Order Status for this order in all export parts, then correct or re-export the complete batch.`);error.code='order-conflict';error.details={kind:'order-conflict',orderId:id,platform:p,store:s,rows:[first,source]};throw error;}
+        // Different completed/canceled SKUs are a partial cancellation. Conflicting
+        // dates, statuses on the same SKU, and other status mixtures still block.
+        const sameSku=o.lines.find(l=>l.sku===sku&&(l.status||o.status)!==st),partial=!sameSku&&[o.status,st,...o.lines.map(l=>l.status||o.status)].every(v=>['Completed','Canceled'].includes(v));
+        if(o.date!==d||(o.status!==st&&!partial)||sameSku){const first=(sameSku&&sources.get(key([k,sku])))||sources.get(k),error=Error(`Order ${id} has conflicting dates/statuses within the export. ${first.file}, row ${first.row}: ${first.date} / ${first.status}; ${f.name}, row ${i+2}: ${d} / ${st}. Check Order Time and Order Status for this order in all export parts, then correct or re-export the complete batch.`);error.code='order-conflict';error.details={kind:'order-conflict',orderId:id,platform:p,store:s,rows:[first,source]};throw error;}
+        if(o.lines.length===1)sources.set(key([k,o.lines[0].sku]),sources.get(k));
+        if(o.lines.length)sources.set(key([k,sku]),source);
+        if(o.status!==st&&partial)o.status='Completed';
         const lineId=c.line>=0?text(r[c.line]):'';if(lineId&&o.lineIds.has(lineId)){duplicates++;continue;}if(lineId)o.lineIds.add(lineId);
-        o.lines.push({sku,product:text(r[c.product]),price,qty,...(enrichment.line?.(r,c)||{})});lines++;
+        o.lines.push({status:st,sku,product:text(r[c.product]),price,qty,...(enrichment.line?.(r,c)||{})});lines++;
       }
       }
       // Only processing-only identities need a marker. A real sale in this same
       // export supplies its own date/status/items, independent of file order.
       const merged=new Map([...processing,...batch]);
-      for(const [k,o] of merged){delete o.lineIds;const prior=all.get(k);if(prior?.sourceBatch&&exportBatch.stamp&&prior.sourceBatch>exportBatch.stamp){older++;continue;}if(prior){const content=x=>JSON.stringify({id:x.id,date:x.date,store:x.store,marketplaceStore:x.marketplaceStore,platform:x.platform,status:x.status,lines:x.lines,customer:x.customer});if(content(prior)===content(o)){duplicates++;if(exportBatch.stamp>String(prior.sourceBatch||''))prior.sourceBatch=exportBatch.stamp;continue;}replaced++;}if(exportBatch.stamp)o.sourceBatch=exportBatch.stamp;all.set(k,o);}
+      for(const [k,o] of merged){delete o.lineIds;if(o.lines.some(l=>l.status==='Completed')&&o.lines.some(l=>l.status==='Canceled'))o.partialCanceled=true;const prior=all.get(k);if(prior?.sourceBatch&&exportBatch.stamp&&prior.sourceBatch>exportBatch.stamp){older++;continue;}if(prior){const content=x=>JSON.stringify({id:x.id,date:x.date,store:x.store,marketplaceStore:x.marketplaceStore,platform:x.platform,status:x.status,lines:x.lines,customer:x.customer});if(content(prior)===content(o)){duplicates++;if(exportBatch.stamp>String(prior.sourceBatch||''))prior.sourceBatch=exportBatch.stamp;continue;}replaced++;}if(exportBatch.stamp)o.sourceBatch=exportBatch.stamp;all.set(k,o);}
     }
     if(older)errors.push(`${older} older order versions were skipped because newer BigSeller exports are already imported.`);
-    const records=Array.from(all.values()),orderCount=records.filter(o=>!excludedOrder(o)).length,excludedOrders=[...excludedKeys].filter(k=>excludedOrder(all.get(k))).length;return {mode:'raw',records,orderCount,...aggregate(records),diagnostics:{invalid,duplicates,replaced,older,lines,excludedRows,platformProcessingRows,unpricedToShipRows,excludedOrders,retainedSalesOrders:excludedKeys.size-excludedOrders,errors}};
+    const records=Array.from(all.values()),orderCount=records.filter(o=>!excludedOrder(o)).length,excludedOrders=[...excludedKeys].filter(k=>excludedOrder(all.get(k))).length;return {mode:'raw',records,orderCount,...aggregate(records),diagnostics:{invalid,duplicates,replaced,older,lines,excludedRows,platformProcessingRows,unpricedToShipRows,excludedOrders,retainedSalesOrders:excludedKeys.size-excludedOrders,partialCanceledOrders:records.filter(o=>o.partialCanceled).length,errors}};
   }
   function summary(dailyRows,skuRows){
     function parse(rows,sku){if(!rows||rows.length<1)throw Error('Missing DATA Orders summary.');const headers=rows[0].map(v=>text(v).toLowerCase());const idx=s=>headers.indexOf(s);const names=sku?['month key','store code','marketplace','order status','gmv','units','orders','merchant sku','product name']:['date','store code','marketplace','order status','gmv','units','orders'];for(const n of names)if(idx(n)<0)throw Error(`Summary header missing: ${n}`);

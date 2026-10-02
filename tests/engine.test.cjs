@@ -10,7 +10,7 @@ const repeated=E.raw([file([row('1','A',1,100),row('1','A',1,100)])]);assert.equ
 assert.equal(E.raw([file([row('1','A','garbage',100)])]).diagnostics.invalid,1);assert.equal(E.raw([file([row('1','A',1.5,100)])]).diagnostics.invalid,1);
 assert.throws(()=>E.raw([{name:'missing',headers:headers.filter(x=>x!=='Price'),rows:[]}]),/missing headers/);
 assert.equal(E.date('2026-09-01T18:00:00Z'),'2026-09-02');assert.equal(E.date('31/08/2026'),'2026-08-31');assert.equal(E.date('2026-02-30'),'');assert.equal(E.number('THB 1,500.50'),1500.5);
-assert.throws(()=>E.raw([file([row('1','A',1,100),row('1','B',1,100,'Canceled')])]),/conflicting/);
+assert.throws(()=>E.raw([file([row('1','A',1,100),row('1','A',1,100,'Canceled')])]),/conflicting/);
 assert.equal(E.date('30 Jun 2026 19:09'),'2026-06-30');
 assert.equal(E.date('31 Feb 2026 19:09'),'');
 assert.equal(E.raw([file([row('free','A',1,0)])]).daily[0].gmv,0);
@@ -60,10 +60,32 @@ assert.equal(messages.at(-1).result.orderCount,1);assert.equal(messages.at(-1).r
 console.log('PASS: Platform Processing exclusions, missing/priced rows, all sales totals, status transitions, older exports, legacy reports and worker preview count.');
 const many=Array.from({length:100000},(_,i)=>row(String(i),'A',1,2));const start=performance.now();const large=E.raw([file(many)]);assert.equal(large.records.length,100000);assert.equal(large.daily[0].gmv,200000);assert.equal(large.daily[0].orders,100000);console.log(`PASS: header mapping, quantity validation, zero quantity, multi-SKU orders, duplicate exports, status updates, repeated SKU lines, Bangkok dates, conflict rejection, 100,000-row aggregation (${Math.round(performance.now()-start)} ms).`);
 
-const conflictParts=Array.from({length:12},(_,i)=>part('20261002074246450',i+1,[row(i===0||i===11?'1078238338262289':'other'+i,'W'+i,1,10,i===11?'Canceled':'Completed')]));
+const conflictParts=Array.from({length:12},(_,i)=>part('20261002074246450',i+1,[row(i===0||i===11?'1078238338262289':'other'+i,i===11?'W0':'W'+i,1,10,i===11?'Canceled':'Completed')]));
 assert.throws(()=>E.raw(conflictParts),error=>{assert.equal(error.code,'order-conflict');assert.equal(error.details.orderId,'1078238338262289');assert.equal(error.details.rows[0].file,'Order-SKU-all20261002074246450(1).xlsx');assert.equal(error.details.rows[1].file,'Order-SKU-all20261002074246450(12).xlsx');assert.equal(error.details.rows[0].row,2);assert.equal(error.details.rows[1].row,2);assert.equal(error.details.rows[0].status,'Completed');assert.equal(error.details.rows[1].status,'Canceled');assert.match(error.message,/row 2: 2026-09-01 \/ Completed/);return true;});
 const priorRecord=JSON.stringify(a.records);assert.throws(()=>E.raw(conflictParts,a.records),/conflicting/);assert.equal(JSON.stringify(a.records),priorRecord);
 const duplicateDates=[row('date-only','A',1,10),row('date-only','B',1,10)];duplicateDates[1][1]='2026-09-02 12:00:00';assert.throws(()=>E.raw([file(duplicateDates)]),error=>error.details.rows[0].date==='2026-09-01'&&error.details.rows[1].date==='2026-09-02');
 const xlsxFile=rows=>{const w=XLSX.utils.book_new();XLSX.utils.book_append_sheet(w,XLSX.utils.aoa_to_sheet([headers,...rows]),'Orders');return XLSX.write(w,{type:'array',bookType:'xlsx'});};
 const workerMessages=[],diagnosticWorker={importScripts:()=>{},XLSX,NKMEngine:E,self:{postMessage:v=>workerMessages.push(v)}};vm.runInNewContext(fs.readFileSync(require.resolve('../assets/import-worker.js'),'utf8'),diagnosticWorker);diagnosticWorker.self.onmessage({data:{files:conflictParts.map(f=>({name:f.name,buffer:xlsxFile(f.rows)})),cloud:true}});assert.equal(workerMessages.at(-1).code,'order-conflict');assert.equal(workerMessages.at(-1).details.rows[1].file,conflictParts[11].name);
 const twelveValid=conflictParts.map(f=>({...f,rows:f.rows.map(r=>{const out=[...r];out[4]='Completed';return out;})}));assert.equal(E.raw(twelveValid).orderCount,11);console.log('PASS: 12 XLSX export parts, actionable conflict locations, preserved existing orders, and worker diagnostic delivery.');
+
+
+const I=require('../assets/insights.js'),Customer=require('../backend/functions/lib/customer.js'),S=require('../assets/stock-engine.js');
+const completed=row('partial','Wiper_Vigo03-14_21/19',1,59),canceled=row('partial','Wiper_MUX14up_22/19',1,59,'Canceled');
+for(const rows of [[completed,canceled],[canceled,completed]]) {
+ const data=E.raw([file(rows)]),o=data.records[0];
+ assert.equal(o.status,'Completed');assert.equal(o.partialCanceled,true);assert.equal(data.orderCount,1);assert.equal(data.diagnostics.partialCanceledOrders,1);
+ const all=data.daily.reduce((t,r)=>({gmv:t.gmv+r.gmv,units:t.units+r.units,orders:t.orders+r.orders}),{gmv:0,units:0,orders:0});
+ assert.deepEqual(all,{gmv:118,units:2,orders:1});
+ for(const basis of ['completed','active'])assert.deepEqual(I.basis(data.daily,basis).map(r=>[r.gmv,r.units,r.orders]),[[59,1,1]]);
+ assert.equal(data.daily.find(r=>r.status==='Canceled').orders,0);assert.equal(data.skus.find(r=>r.status==='Canceled').orders,1);
+ const health=I.lifecycle(data.daily);assert.equal(health.total.orders,1);assert.equal(health.canceled.gmv,59);assert.equal(health.cancelRate,0);
+ for(const basis of ['completed','active','all']) {const customer=Customer.summary(data.records,{from:'2026-09-01',to:'2026-09-30',basis});assert.equal(customer.totals.orders,1);assert.equal(customer.totals.gmv,basis==='all'?118:59);assert.equal(customer.totals.units,basis==='all'?2:1);}
+ const demand=S.demand(data.records,'2026-09-01',['2026-08','2026-09']);assert.equal(demand.rows.find(r=>r.sku===completed[5]).units30,1);assert.equal(demand.rows.find(r=>r.sku===canceled[5]).units30,0);
+ const retry=E.raw([file(rows)],data.records);assert.equal(retry.diagnostics.duplicates,1);assert.equal(retry.orderCount,1);assert.deepEqual(retry.daily,data.daily);
+}
+const partialParts=Array.from({length:12},(_,i)=>part('20261002074246450',i+1,[i===0?completed:i===11?canceled:row('other'+i,'SKU',1,1)])),splitPartial=E.raw(partialParts);
+const partialWorkerMessages=[],partialWorker={importScripts:()=>{},XLSX,NKMEngine:E,self:{postMessage:v=>partialWorkerMessages.push(v)}};vm.runInNewContext(fs.readFileSync(require.resolve('../assets/import-worker.js'),'utf8'),partialWorker);partialWorker.self.onmessage({data:{files:partialParts.map(f=>({name:f.name,buffer:xlsxFile(f.rows)})),cloud:true}});assert.equal(partialWorkerMessages.at(-1).result.orderCount,11);assert.equal(partialWorkerMessages.at(-1).result.diagnostics.partialCanceledOrders,1);assert.equal(partialWorkerMessages.at(-1).result.records.length,0);
+assert.equal(splitPartial.orderCount,11);assert.equal(splitPartial.diagnostics.partialCanceledOrders,1);
+assert.equal(E.raw([part('20261003074246450',1,[row('partial','SKU',1,20,'Canceled')])],splitPartial.records).diagnostics.partialCanceledOrders,0);
+assert.throws(()=>E.raw([file([completed,row('partial','OTHER',1,10,'Shipped')])]),/conflicting/);
+console.log('PASS: partial cancellation across 12 parts, distinct order counts, sales bases, customer totals, zero canceled stock demand, retries and replacement.');
