@@ -29,7 +29,7 @@ Publish the frontend through the existing GitHub Pages workflow. Hard-refresh th
 
 1. Set the stock snapshot as-of date and upload the complete BigSeller inventory export (XLSX or CSV). On Hand is the starting balance. Allocations and reservations are not subtracted. English and Thai inventory headers are supported.
 2. Review warehouse selection. New workspaces include exported warehouses other than Return by default; all warehouse choices are visible and editable. The complete upload replaces the prior snapshot, including warehouses absent from the new export.
-3. Set running rates in SKU details or use imported online sales. Imported rates require all calendar months in the trailing 30-day window to be present. Exact stock SKU matches use Completed, Shipped and To Ship order units, excluding Manual orders. Add offline demand separately. Unmatched SKUs retain their existing assumptions; missing rates stay unavailable.
+3. Online running rates now sync automatically when opening Stock Forecast, refreshing it, or receiving a new sales-report revision. The default is a 30-day average; switch to 7 days if desired. Rates are calculated from shared sales reports for every member and do not require Save workspace. Matched online rates are read-only; offline demand remains editable. Unmatched stock SKUs can use a manual fallback in SKU details. Imported rates require all calendar months in the trailing 30-day window to be present. The averaging window ends on the latest imported online order date; cancelled and returned orders contribute zero demand. Exact stock SKU matches use Completed, Shipped and To Ship order units, excluding Manual orders. Add offline demand separately. Previously sold exact SKUs with no units in the latest complete window get a zero rate. Unknown SKU matches require a manual fallback or bundle mapping. Incomplete sales coverage keeps automated rates unavailable.
 4. Review suggested category mappings. Defaults are Wiper 45 days, Spray 60 days and Others 45 days, including production. Each PO line has an editable warehouse-ready ETA.
 5. Create one PO with one or more SKU lines. Ordered quantities are fixed values. Draft and cancelled remaining quantities do not enter the main forecast. Apply updates your draft; Save workspace shares it.
 6. Record partial or full receipts per line. Receipt dates on or before the snapshot date are assumed included in that snapshot and are not added again. Later receipts enter the forecast on their actual dates. Refresh the stock snapshot regularly. Overdue outstanding quantities do not become stock automatically.
@@ -49,3 +49,13 @@ node --test backend/tests/ui.test.cjs tests/stock-ui.test.cjs
 ```
 
 Tests cover fixed PO quantities, gaps between arrivals, zero and missing demand, partial receipts, snapshot replacement, warehouse scope, draft/cancelled/overdue supply, lost sales/backorders, purchase recommendations, online demand coverage, edit roles, conflicting revisions, and sign-out/revocation cleanup.
+
+## Upgrade automatic running rates
+
+After pulling this update, deploy the updated demand function from the backend directory:
+
+```sh
+npx firebase deploy --only functions:nakama:nkmStockDemand --project nakama-sales
+```
+
+No new function or database rule is needed. The demand response now includes historically matched sales SKUs with zero units in the latest window. Stock Forecast has moved into Management navigation; public navigation exposes Management only. Sidebar controls select and scroll to their section, maintain active states and support section URLs.
