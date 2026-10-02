@@ -28,7 +28,7 @@ test('sign-in form exposes the password only on request, prevents duplicate subm
  let resolve;let attempts=0;const h=cloudHarness(),dom=new JSDOM(read('management.html'),{url:'http://localhost/management.html',runScripts:'outside-only'}),w=dom.window,ctx=dom.getInternalVMContext();
  w.scrollTo=()=>{};w.matchMedia=()=>({matches:false,addEventListener:()=>{}});
  w.cloudMock={pendingImport:()=>null,signIn:async()=>{attempts++;return new Promise(r=>resolve=r);},authError:e=>vm.runInContext('authError('+JSON.stringify(e)+')',h.ctx)};
- for(const file of ['engine.js','store-labels.js','report.js','charts.js','insights.js','insight-ui.js','theme.js'])vm.runInContext(read('assets/'+file),ctx);
+ for(const file of ['engine.js','store-labels.js','report.js','date-range.js','charts.js','insights.js','insight-ui.js','theme.js'])vm.runInContext(read('assets/'+file),ctx);
  vm.runInContext(read('assets/management.js').split("import('./cloud.js")[0]+'\ncloud=cloudMock;sessionChanged(null);',ctx);
  const el=id=>w.document.getElementById(id);el('auth-email').value='user@example.com';el('auth-password').value='Secret!';el('auth-show-password').click();assert.equal(el('auth-password').type,'text');el('auth-show-password').click();assert.equal(el('auth-password').type,'password');
  el('auth-form').dispatchEvent(new w.Event('submit',{cancelable:true}));el('auth-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(attempts,1);assert.equal(el('auth-submit').disabled,true);resolve();await new Promise(r=>setTimeout(r,0));
