@@ -2,9 +2,9 @@
   'use strict';
   const R = root.NKMReport || (typeof require === 'function' && require('./report'));
   const buckets = [
-    ['completed', 'Completed', 'Completed'],
+    ['completed', 'Completed', 'Completed item value; partially canceled orders count once here'],
     ['inProgress', 'In progress', 'To Ship, Shipped and Unpaid'],
-    ['canceled', 'Canceled', 'Canceled order value'],
+    ['canceled', 'Canceled', 'Canceled item value; order count includes fully canceled orders only'],
     ['returned', 'Return & Refund', 'Order value, not the actual refund amount'],
     ['other', 'Other statuses', 'Statuses without a known sales classification']
   ];

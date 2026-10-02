@@ -13,3 +13,11 @@ test('warehouse processing and real sales sharing one ID keep only real sales',(
 test('confirmed unpriced Shopee To Ship transfers are excluded, priced sales remain',()=>{const transfer=row('transfer',1,'--');transfer[4]='To Ship';const sale=row('priced',1,59);sale[4]='To Ship';const data=C.calculate([parsed([transfer,sale])]);a.equal(data.orderCount,1);a.equal(data.diagnostics.unpricedToShipRows,1);a.equal(data.daily[0].gmv,59);a.equal(data.daily[0].status,'To Ship');a.equal(C.calculate([parsed([sale])],C.unpack(C.snapshot(data.records))).orderCount,1);const replaced=C.calculate([parsed([row('transfer',2,20)])],data.records);a.equal(replaced.orderCount,2);a.equal(replaced.daily.reduce((n,r)=>n+r.gmv,0),99);const badPrice=[...sale];badPrice[8]='garbage';a.throws(()=>C.calculate([parsed([badPrice])]),e=>e.code==='invalid-argument'&&e.details.errors[0].includes('Price "garbage"'));});
 
 test('order conflicts identify both export locations without publishing a report',()=>{const first=parsed([row('1078238338262289')],'Order-SKU-all20261002074246450(1).csv'),parts=Array.from({length:10},(_,i)=>parsed([row('other'+i)],`Order-SKU-all20261002074246450(${i+2}).csv`)),changed=row('1078238338262289');changed[4]='Canceled';a.throws(()=>C.calculate([first,...parts,parsed([changed],'Order-SKU-all20261002074246450(12).csv')]),e=>{a.equal(e.code,'invalid-argument');a.equal(e.details.kind,'order-conflict');a.equal(e.details.rows[0].status,'Completed');a.equal(e.details.rows[1].status,'Canceled');a.equal(e.details.rows[1].row,2);return true;});a.equal(require('node:fs').readFileSync(require('node:path').resolve(__dirname,'../../assets/engine.js'),'utf8'),require('node:fs').readFileSync(require('node:path').resolve(__dirname,'../functions/lib/engine.js'),'utf8'));});
+
+test('partial cancellation preserves both item statuses and counts one completed order',()=>{
+ const sale=row('partial',1,59),cancel=row('partial',1,59);cancel[4]='Canceled';cancel[5]='OTHER';
+ const data=C.calculate([parsed([sale,cancel])]),records=C.unpack(C.snapshot(data.records));
+ a.equal(records[0].partialCanceled,true);a.deepEqual(records[0].lines.map(l=>l.status),['Completed','Canceled']);
+ const meta=C.reports(data)[0].meta;a.equal(meta.orders,1);a.equal(meta.gmv,118);a.equal(meta.units,2);
+ a.equal(C.calculate([parsed([sale,cancel])],records).diagnostics.duplicates,1);
+});
