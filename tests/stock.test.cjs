@@ -18,3 +18,15 @@ test('unreceived ETA before today stays overdue even with an older snapshot; new
 test('historical exact sales SKUs have a confirmed zero rate when the latest window has no units',()=>{const r=S.demand([{date:'2026-08-01',status:'Completed',platform:'Shopee',lines:[{sku:'OLD',qty:100}]},{date:'2026-09-30',status:'Completed',platform:'Shopee',lines:[{sku:'NEW',qty:300}]}],null,['2026-09']);a.equal(r.rows.find(x=>x.sku==='OLD').rate30,0);a.equal(r.rows.find(x=>x.sku==='NEW').rate30,10);});
 test('derived sales rates leave offline demand, manual fallbacks and purchase orders intact',()=>{const s=fixture();s.skus[0].offline=5;s.pos=[po('P','2026-10-16',2000)];const before=JSON.stringify(s);const report={coverage:true,end:'2026-09-30',rows:[{sku:s.skus[0].sku,rate30:100,rate7:200}]};const auto=S.applyDemand(s,report,30);a.equal(auto.skus[0].rate,100);a.equal(auto.skus[0].offline,5);a.equal(S.applyDemand(s,report,7).skus[0].rate,200);a.equal(auto.pos[0].lines[0].qty,2000);a.equal(JSON.stringify(s),before);a.equal(S.applyDemand(s,{...report,coverage:false}).skus[0].rate,null);a.equal(S.applyDemand(s,{...report,rows:[]}).skus[0].rate,50);});
 test('cancelled-only online SKUs get zero demand and the latest imported date defines the window',()=>{const r=S.demand([{date:'2026-08-01',status:'Completed',platform:'Shopee',lines:[{sku:'OLD',qty:100}]},{date:'2026-09-30',status:'Canceled',platform:'Shopee',lines:[{sku:'CANCEL',qty:300}]}],null,['2026-09']);a.equal(r.end,'2026-09-30');a.equal(r.coverage,true);a.equal(r.rows.find(x=>x.sku==='OLD').rate30,0);a.equal(r.rows.find(x=>x.sku==='CANCEL').rate30,0);});
+
+test('Max and Min use combined daily SKU units, including zero days, rather than individual orders',()=>{
+ const order=(date,qty,status='Completed',platform='Shopee')=>({date,status,platform,lines:[{sku:'SKU',qty}]});
+ const records=[order('2026-09-24',10),order('2026-09-24',90),order('2026-09-25',20),order('2026-09-26',30),order('2026-09-27',40),order('2026-09-28',50),order('2026-09-29',60),order('2026-09-30',70),order('2026-09-01',1000),order('2026-09-30',9999,'Canceled'),order('2026-09-30',9999,'Completed','Manual')];
+ const report=S.demand(records,'2026-09-30',['2026-09']),row=report.rows[0];
+ a.equal(report.statsVersion,2);a.equal(row.max7,100);a.equal(row.min7,20);a.equal(row.max30,1000);a.equal(row.min30,0);a.equal(row.rate7,370/7);a.equal(row.rate30,1370/30);
+ a.equal('daily' in row,false);
+ const state=fixture();state.skus[0].sku='SKU';state.snapshot.rows[0].sku='SKU';state.skus[0].offline=5;state.pos=[po('P','2026-11-10',2000)];const original=JSON.stringify(state);
+ a.equal(S.applyDemand(state,report,7,'max').skus[0].rate,100);a.equal(S.applyDemand(state,report,7,'min').skus[0].rate,20);a.equal(S.applyDemand(state,report,30,'min').skus[0].rate,0);a.equal(S.forecast(S.applyDemand(state,report,7,'max'),'SKU',state.snapshot.date).rate,105);a.equal(JSON.stringify(state),original);
+ a.equal(S.applyDemand(state,{...report,coverage:false},7,'max').skus[0].rate,null);
+ a.equal(S.applyDemand(state,{...report,rows:[{sku:'SKU',rate30:25}]},30,'max').skus[0].rate,null);
+});
