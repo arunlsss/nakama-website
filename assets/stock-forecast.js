@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id),S=NKMStock,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:0}),rateFmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:2}),clone=v=>JSON.parse(JSON.stringify(v)),id=()=>crypto.randomUUID();
-let cloud,session=null,state=S.empty(),revision=null,generation=0,busy=false,dirty=false,activeSku=null,editingPO=null,receivingPO=null,worker=null,tab=location.hash==='#pos'?'pos':'overview',stockPage=0,results=new Map(),salesReport=null,syncPending=false,stockLoaded=false,calendarMonth=null,pendingSnapshot=null;
+let cloud,session=null,state=S.empty(),revision=null,generation=0,busy=false,dirty=false,activeSku=null,editingPO=null,receivingPO=null,worker=null,tab=(document.documentElement.dataset.embedded==='true'?window.frameElement?.dataset.section:location.hash.slice(1))==='pos'?'pos':'overview',stockPage=0,results=new Map(),salesReport=null,syncPending=false,stockLoaded=false,calendarMonth=null,pendingSnapshot=null;
 const sorts={stock:{key:null,direction:1},po:{key:null,direction:1},skuPO:{key:null,direction:1}};
 const allowed=()=>Boolean(session?.user&&!session.blocked&&!session.loading),editable=()=>allowed()&&stockLoaded&&['admin','importer'].includes(session.role),warehouses=()=>[...new Set(state.snapshot?.rows.map(r=>r.warehouse)||[])];
 function error(message){$('stock-error').textContent=message||'';$('stock-error').hidden=!message;}
@@ -12,7 +12,7 @@ function inputSettings(){for(const [key,el] of [['horizon','horizon'],['safetyDa
 const effectiveState=()=>S.applyDemand(state,salesReport,$('rate-window').value,$('rate-logic').value);
 const autoSku=sku=>Boolean(salesReport?.coverage&&salesReport.rows.some(r=>r.sku===sku));
 function render(){
- if(!allowed())return;const projectedState=effectiveState();results=new Map(state.skus.map(r=>[r.sku,S.forecast(projectedState,r.sku)]));
+ if(!allowed())return;document.body.classList.toggle('stock-po-view',tab==='pos');$('inventory-title').textContent=tab==='pos'?'Purchase Orders':'Stock Forecast';$('inventory-eyebrow').textContent=tab==='pos'?'INVENTORY MANAGEMENT':'PLAN EVERY ARRIVAL';$('inventory-description').textContent=tab==='pos'?'Manage Nakama purchase orders, arrival dates and stock receipts.':'See shortages before your next PO arrives.';const projectedState=effectiveState();results=new Map(state.skus.map(r=>[r.sku,S.forecast(projectedState,r.sku)]));
  const skus=new Set(state.snapshot?.rows.filter(r=>state.settings.warehouses.includes(r.warehouse)).map(r=>r.sku)||[]),values=[...skus].map(s=>results.get(s));
  $('stock-total').textContent=fmt.format([...skus].reduce((n,sku)=>n+S.openingStock(state,sku),0));
  $('snapshot-label').textContent=state.snapshot?'Closing snapshot: '+state.snapshot.date:'No stock snapshot';$('risk-total').textContent=values.filter(r=>r?.firstShortage).length;$('missing-total').textContent=values.filter(r=>!r?.available).length;
@@ -115,7 +115,8 @@ $('stock-file').onchange=async()=>{const file=$('stock-file').files[0];$('stock-
 $('warehouse-options').onchange=e=>{if(!editable()||busy)return;state.settings.warehouses=[...$('warehouse-options').querySelectorAll('input:checked')].map(el=>el.dataset.warehouse);changed();};
 for(const [el,key] of [['horizon','horizon'],['safety-days','safetyDays'],['coverage-days','coverageDays'],['demand-mode','demandMode']])$(el).onchange=()=>{if(!editable()||busy)return;const next=clone(state);next.settings[key]=el==='demand-mode'?$(el).value:Number($(el).value);try{state=S.validate(next);changed();}catch(e){error(e.message);inputSettings();}};
 for(const el of ['sku-search','category-filter','risk-filter'])$(el).addEventListener(el==='sku-search'?'input':'change',()=>{stockPage=0;renderRows();});
-function selectTab(next,navigate=true){if(!['overview','pos'].includes(next))return;tab=next;if(!allowed())return;render();if(navigate&&location.hash!=='#'+next)history.pushState(null,'','#'+next);$('stock-'+(next==='pos'?'pos':'overview')).scrollIntoView?.({block:'start',behavior:'smooth'});}
+function selectTab(next,navigate=true){if(!['overview','pos'].includes(next))return;tab=next;if(!allowed())return;render();if(location.hash!=='#'+next){if(navigate&&document.documentElement.dataset.embedded!=='true')history.pushState(null,'','#'+next);else history.replaceState(null,'','#'+next);}if(navigate&&document.documentElement.dataset.embedded==='true'){window.frameElement.dataset.section=next;window.parent.NKMWorkspaceBridge.navigate(next==='pos'?'pos':'stock');}$('stock-'+(next==='pos'?'pos':'overview')).scrollIntoView?.({block:'start',behavior:'smooth'});}
+window.NKMStockNavigate=next=>selectTab(next,false);
 for(const b of document.querySelectorAll('[data-stock-tab]'))b.onclick=()=>selectTab(b.dataset.stockTab);
 window.addEventListener('hashchange',()=>selectTab(location.hash.slice(1)||'overview',false));
 $('stock-prev').onclick=()=>{stockPage=Math.max(0,stockPage-1);renderRows();};$('stock-next').onclick=()=>{stockPage++;renderRows();};

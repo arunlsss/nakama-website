@@ -38,3 +38,6 @@ th[aria-sort="ascending"] .stock-sort-arrows i:first-child,th[aria-sort="descend
 .calendar-low .calendar-status,.calendar-unavailable{color:var(--muted)}
 .calendar-wrap:focus-visible,.calendar-balance:focus-visible{outline:2px solid var(--red);outline-offset:-2px}
 @media(max-width:600px){.calendar-navigation{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px}.calendar-navigation button{font-size:14px;padding:10px 8px;min-height:44px}#calendar-month{min-width:0;font-size:14px}#calendar-table th,#calendar-table td{padding:12px;min-width:155px}#calendar-table tr>:first-child{min-width:120px;max-width:130px}#calendar-table .stock-row-sku{max-width:105px;font-size:14px}.calendar-balance{font-size:20px}}
+
+.stock-po-view .stock-planning{display:none}.sidebar .nav-group .nav-item{display:flex}
+.stock-dialog label{min-width:0}@media(max-width:600px){.stock-dialog .stock-settings,.stock-dialog .po-line-grid{grid-template-columns:minmax(0,1fr)}}

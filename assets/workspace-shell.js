@@ -14,7 +14,7 @@ function initEmbedded(){
  const modal=HTMLDialogElement.prototype.showModal;
  HTMLDialogElement.prototype.showModal=function(){positionDialog(this);modal.call(this);};
  const move=()=>document.querySelectorAll('dialog[open]').forEach(positionDialog);document.addEventListener('close',resize,true);parent.addEventListener('scroll',move,{passive:true});parent.addEventListener('resize',move);window.addEventListener('pagehide',()=>{parent.removeEventListener('scroll',move);parent.removeEventListener('resize',move);},{once:true});
- document.addEventListener('click',event=>{const link=event.target.closest('a[href]');if(!link||link.getAttribute('href').startsWith('#'))return;const url=new URL(link.href,location.href);if(url.origin!==location.origin)return;const file=url.pathname.split('/').at(-1);let view=file==='management.html'?url.hash.slice(1)||'overview':file==='stock-forecast.html'?'stock':file==='customer-insight.html'?'customers':null;if(view){event.preventDefault();parent.NKMWorkspaceBridge.navigate(view);}});
+ document.addEventListener('click',event=>{const link=event.target.closest('a[href]');if(!link||link.getAttribute('href').startsWith('#'))return;const url=new URL(link.href,location.href);if(url.origin!==location.origin)return;const file=url.pathname.split('/').at(-1);let view=file==='management.html'?url.hash.slice(1)||'summary':file==='stock-forecast.html'?(url.hash==='#pos'?'pos':'stock'):file==='customer-insight.html'?'customers':null;if(view){event.preventDefault();parent.NKMWorkspaceBridge.navigate(view);}});
  const theme=()=>{document.documentElement.dataset.theme=parent.document.documentElement.dataset.theme;document.documentElement.dataset.themeMode=parent.document.documentElement.dataset.themeMode;};
  const themeObserver=new MutationObserver(theme);themeObserver.observe(parent.document.documentElement,{attributes:true,attributeFilter:['data-theme','data-theme-mode']});window.addEventListener('pagehide',()=>themeObserver.disconnect(),{once:true});theme();
 }
@@ -29,7 +29,12 @@ window.NKMWorkspace={create({session,allowed,api,navigate}){
   clearReportCache:()=>requireApi().clearReportCache(),navigate
  };
  return {
-  open(view){if(!allowed()||frames.has(view))return;const holder=document.getElementById(view+'-view'),frame=document.createElement('iframe');frame.title=view==='stock'?'Stock Forecast workspace':'Customer Insight workspace';frame.className='workspace-frame';frame.src=(view==='stock'?'stock-forecast.html':'customer-insight.html')+'?embedded=1';holder.replaceChildren(frame);frames.set(view,frame);},
+  open(view,section='overview'){
+   if(!allowed())return;let frame=frames.get(view);
+   const select=()=>{if(view==='stock')frame.contentWindow?.NKMStockNavigate?.(frame.dataset.section);};
+   if(frame){if(view==='stock'&&frame.dataset.section!==section){frame.dataset.section=section;select();}return;}
+   const holder=document.getElementById(view+'-view');frame=document.createElement('iframe');frame.dataset.section=section;frame.title=view==='stock'?'Inventory Management workspace':'Customer Insight workspace';frame.className='workspace-frame';frame.addEventListener('load',select);frame.src=(view==='stock'?'stock-forecast.html':'customer-insight.html')+'?embedded=1'+(view==='stock'?'#'+section:'');holder.replaceChildren(frame);frames.set(view,frame);
+  },
   session(next){for(const client of clients)Promise.resolve(client.onSession(next)).catch(()=>{});if(!next?.user||next.blocked||next.loading){document.querySelectorAll('[data-workspace-dialog]').forEach(dialog=>dialog.remove());for(const [view] of frames)document.getElementById(view+'-view').replaceChildren();frames.clear();clients.clear();}},
   update(){for(const client of clients)client.onUpdate?.();},
   frameCount:()=>frames.size
