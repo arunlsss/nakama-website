@@ -1,6 +1,16 @@
 import * as F from './vendor/firebase-sdk.js?v=glass-20261001';
 const config=window.NKM_CLOUD_CONFIG;let auth,functions,storage,stopWatching;
-const call=async(name,data,timeout=70000)=>(await F.httpsCallable(functions,name,{timeout})(data)).data;
+let bridge=null;try{if(new URLSearchParams(window.location?.search||'').get('embedded')==='1'&&window.parent!==window&&window.parent.location.origin===window.location.origin)bridge=window.parent.NKMWorkspaceBridge||null;}catch{}
+const reportPromises=new Map();
+export function clearReportCache(){if(bridge)return bridge.clearReportCache();reportPromises.clear();}
+export async function call(name,data,timeout=70000){
+ if(bridge)return bridge.call(name,data,timeout);
+ const cacheKey=name==='nkmReportPage'&&auth?.currentUser?auth.currentUser.uid+'|'+JSON.stringify(data):null;
+ if(cacheKey&&reportPromises.has(cacheKey))return reportPromises.get(cacheKey);
+ const promise=F.httpsCallable(functions,name,{timeout})(data).then(r=>r.data);
+ if(cacheKey){if(reportPromises.size>=100)reportPromises.delete(reportPromises.keys().next().value);reportPromises.set(cacheKey,promise);promise.catch(()=>{if(reportPromises.get(cacheKey)===promise)reportPromises.delete(cacheKey);});}
+ return promise;
+}
 const key=()=>`nakama-import:${config.firebase.projectId}:${auth.currentUser.uid}`;
 export const configured=Boolean(config?.firebase?.projectId&&config.firebase.apiKey&&!/attendance/i.test(config.firebase.projectId));
 export function authError(error,stage='signin'){
@@ -23,29 +33,30 @@ export function authError(error,stage='signin'){
 }
 let refreshSession,pendingId=null;
 export async function start(onSession,onError,onUpdate){
+ if(bridge){const unsubscribe=bridge.start(onSession,onError,onUpdate);window.addEventListener('pagehide',unsubscribe,{once:true});return;}
  if(!configured){onSession({setup:true});return;}
  const app=F.initializeApp(config.firebase);
  // Prefer this tab's session storage, with an SDK-supported fallback for restricted browsers.
  auth=F.initializeAuth(app,{persistence:[F.browserSessionPersistence,F.inMemoryPersistence]});
  functions=F.getFunctions(app,config.region||'asia-southeast1');storage=F.getStorage(app);const db=F.getFirestore(app);let generation=0;
  refreshSession=async user=>{
-  const current=++generation;stopWatching?.();stopWatching=null;onSession({loading:true});
+  const current=++generation;reportPromises.clear();stopWatching?.();stopWatching=null;onSession({loading:true});
   if(!user){onSession(null);return;}
   try{
-   await user.getIdToken(true);const state=await call('nkmWorkspace');if(current!==generation)return;
+   await user.getIdToken();const state=await call('nkmWorkspace');if(current!==generation)return;
    onSession({user,role:state.role,state});let observedRevision=state.revision;
-   stopWatching=F.onSnapshot(F.doc(db,'workspace/main'),snap=>{if(current!==generation)return;const next=snap.data()?.revision||null;if(next!==observedRevision){observedRevision=next;onUpdate?.();}},e=>{if(current!==generation)return;onSession({blocked:true,user,error:authError(e,'workspace')});onError(e);});
+   stopWatching=F.onSnapshot(F.doc(db,'workspace/main'),snap=>{if(current!==generation)return;const next=snap.data()?.revision||null;if(next!==observedRevision){observedRevision=next;reportPromises.clear();onUpdate?.();}},e=>{if(current!==generation)return;reportPromises.clear();onSession({blocked:true,user,error:authError(e,'workspace')});onError(e);});
   }catch(e){if(current===generation)onSession({blocked:true,user,error:authError(e,'workspace')});}
  };
  F.onAuthStateChanged(auth,refreshSession);
 }
-export const retrySession=()=>refreshSession(auth.currentUser);
-export const signIn=(email,password)=>F.signInWithEmailAndPassword(auth,String(email).replace(/[\u200B-\u200D\uFEFF]/g,'').trim(),password);
-export const signOut=async()=>{remember(null);await F.signOut(auth);};
+export const retrySession=()=>bridge?bridge.retrySession():refreshSession(auth.currentUser);
+export const signIn=(email,password)=>bridge?bridge.signIn(email,password):F.signInWithEmailAndPassword(auth,String(email).replace(/[\u200B-\u200D\uFEFF]/g,'').trim(),password);
+export const signOut=async()=>{if(bridge)return bridge.signOut();reportPromises.clear();remember(null);await F.signOut(auth);};
 export const workspace=()=>call('nkmWorkspace');
 export const customerInsights=args=>call('nkmCustomerInsights',args,560000);
 export const history=async()=>(await call('nkmHistory')).history;
-export async function loadMonth(state,month,options={}){if(!state.revision||!state.months.includes(month))throw Error('Choose an available month.');const section=async kind=>{const rows=[];let cursor=null,total;const seen=new Set();do{const p=await call('nkmReportPage',{revision:state.revision,month,kind,cursor});if(p.revision!==state.revision||p.month!==month||p.kind!==kind)throw Error('Report changed unexpectedly. Refresh and retry.');if(total===undefined)total=p.total;rows.push(...p.rows);cursor=p.nextCursor;if(cursor&&seen.has(cursor))throw Error('Invalid report pagination. Refresh and retry.');if(cursor)seen.add(cursor);}while(cursor);if(rows.length!==total)throw Error('Incomplete report. Refresh and retry.');return rows;};const [daily,skus]=await Promise.all([section('daily'),options.dailyOnly?Promise.resolve([]):section('skus')]);return {mode:'raw',records:[],daily,skus,diagnostics:{sourceUnverified:false},revision:state.revision,month};}
+export async function loadMonth(state,month,options={}){if(bridge)return bridge.loadMonth(state,month,options);if(!state.revision||!state.months.includes(month))throw Error('Choose an available month.');const section=async kind=>{const rows=[];let cursor=null,total;const seen=new Set();do{const p=await call('nkmReportPage',{revision:state.revision,month,kind,cursor});if(p.revision!==state.revision||p.month!==month||p.kind!==kind)throw Error('Report changed unexpectedly. Refresh and retry.');if(total===undefined)total=p.total;rows.push(...p.rows);cursor=p.nextCursor;if(cursor&&seen.has(cursor))throw Error('Invalid report pagination. Refresh and retry.');if(cursor)seen.add(cursor);}while(cursor);if(rows.length!==total)throw Error('Incomplete report. Refresh and retry.');return rows;};const [daily,skus]=await Promise.all([section('daily'),options.dailyOnly?Promise.resolve([]):section('skus')]);return {mode:'raw',records:[],daily,skus,diagnostics:{sourceUnverified:false},revision:state.revision,month};}
 export function pendingImport(){try{return sessionStorage.getItem(key())||pendingId;}catch{return pendingId;}}
 function remember(id){pendingId=id;try{if(id)sessionStorage.setItem(key(),id);else sessionStorage.removeItem(key());}catch{}}
 export async function retryImport(onProgress){const id=pendingImport();if(!id)throw Error('No pending import in this session.');return processImport(id,onProgress);}
