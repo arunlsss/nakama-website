@@ -59,3 +59,27 @@ npx firebase deploy --only functions:nakama:nkmStockDemand --project nakama-sale
 ```
 
 No new function or database rule is needed. The demand response now includes historically matched sales SKUs with zero units in the latest window. Stock Forecast has moved into Management navigation; public navigation exposes Management only. Sidebar controls select and scroll to their section, maintain active states and support section URLs.
+
+
+## Max / Min / Average and the `internal [0]` transport error
+
+Deploy the updated daily demand statistics after merging and pulling this update. From `backend`:
+
+```sh
+npx firebase deploy --only functions:nakama:nkmStockDemand --project nakama-sales
+```
+
+Average divides each SKU's eligible online units by all 7 or 30 calendar days. Max and Min take the highest and lowest daily totals after combining orders across stores and marketplaces. Zero-sales days count as zero, so Min may be zero. Cancelled, returned, excluded and Manual orders remain excluded. The existing month-coverage requirement remains; missing months do not become zero-sales months. Offline demand and growth are applied separately, and ordered PO quantities and ETAs never change when switching modes. All members can compare modes immediately without saving; the selection is a temporary view, not a shared planning change. Older demand responses support Average only; Max/Min forecasts remain unavailable until the updated service returns their statistics.
+
+A live OPTIONS check on 2 October 2026 returned 204 with CORS headers for `nkmStockForecast`, but 403 without CORS headers for `nkmStockDemand`. This prevents the browser reaching the demand callable and can appear as `functions/internal` / `internal [0]`. The frontend now explains the failed operation and keeps a successfully loaded stock/PO workspace usable. It does not invent a zero rate, bypass permissions, or overwrite a workspace that failed to load.
+
+After deploying, restore the demand service's browser invocation access using your Google Cloud account. Find its actual Cloud Run service name and disable the transport IAM check:
+
+```sh
+stock_demand_service=$(gcloud functions describe nkmStockDemand --gen2 --region=asia-southeast1 --project=nakama-sales --format='value(serviceConfig.service)')
+gcloud run services update "${stock_demand_service##*/}" --region=asia-southeast1 --project=nakama-sales --no-invoker-iam-check
+```
+
+Alternatively, in [Google Cloud Run](https://console.cloud.google.com/run?project=nakama-sales), open the service for `nkmStockDemand`, choose Security, Allow public access, then deploy the change. This controls transport access only: Firebase ID tokens, enabled membership and role checks remain mandatory inside the callable. Google documents this method in [Allowing public access](https://docs.cloud.google.com/run/docs/authenticating/public). It requires Cloud Run Admin permissions and must be allowed by the organization policy. If the organization requires invoker IAM, ask its administrator to configure supported browser invocation access instead.
+
+If Firebase reports an invoker-policy error after creating/updating the service, apply the access setting above. A code edit cannot change the live IAM configuration without project credentials. Hard-refresh Stock Forecast, then select Sync sales now. The note should show the sales window and selected logic, and Max/Min/Average should immediately update rates, risk counts, suggestions and any open SKU chart.

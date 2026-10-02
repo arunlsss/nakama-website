@@ -80,3 +80,5 @@ button:focus-visible,a:focus-visible,[data-chart-detail]:focus-visible{outline:3
 
 /* Management navigation stays reachable on short desktop windows. */
 .sidebar{z-index:20}.sidebar nav{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}.sidebar>.brand,.sidebar>.workspace-label,.sidebar>.sidebar-bottom{flex-shrink:0}.sidebar a.nav-item{display:block;text-decoration:none}.nav-section-label{padding:16px 12px 4px;color:var(--muted);font-size:13px;font-weight:600}.sidebar .stock-subnav{padding-left:24px}#overview-view,#stores-view,#sku-view,#health-view,#sources-view,#imports-view,#stock-overview,#stock-pos{scroll-margin-top:24px}
+
+html,.sidebar nav{scroll-behavior:smooth}
