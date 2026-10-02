@@ -49,7 +49,7 @@
       if(exportBatch.stamp&&exportBatch.files.length>1&&(exportBatch.files.some(f=>f.part===0)||new Set(exportBatch.files.map(f=>f.part)).size!==exportBatch.files.length))throw Error(`Export ${exportBatch.stamp}: duplicate or ambiguous parts. Select one copy of each numbered part, or a single complete export.`);
       const parts=exportBatch.files.map(f=>f.part).filter(Boolean);
       if(parts.length&&parts.some((p,i)=>p!==i+1))throw Error(`Export ${exportBatch.stamp}: split parts must start at (1) and be consecutive. Select every part of the export together.`);
-      const batch=new Map(),processing=new Map();
+      const batch=new Map(),processing=new Map(),sources=new Map();
       for(const f of exportBatch.files){const c=columns(f.headers);const required=['id','date','store','platform','status','sku','product','price','qty'];const missing=required.filter(k=>c[k]<0);if(missing.length)throw Error(`${f.name}: missing headers ${missing.join(', ')}. Price and Quantity must have named columns.`);
       for(let i=0;i<f.rows.length;i++){const r=f.rows[i];if(!r.some(v=>v!==null&&text(v)!==''))continue;const d=date(r[c.date]),p=platform(r[c.platform]),s=store(r[c.store],p),st=status(r[c.status]),id=text(r[c.id]),price=number(r[c.price]),qty=number(r[c.qty]),sku=text(r[c.sku]);
         const unsafeId=typeof r[c.id]==='number'&&!Number.isSafeInteger(r[c.id]);
@@ -60,9 +60,10 @@
         // the same Order No. They must never participate in sales conflict checks.
         if(excluded){excludedRows++;if(isProcessing)platformProcessingRows++;else unpricedToShipRows++;excludedKeys.add(k);if(!processing.has(k))processing.set(k,{...identity,excluded:true,lines:[]});continue;}
         const customer=enrichment.order?.(r,c,p,s);
-        if(!batch.has(k))batch.set(k,{...identity,...(customer?{customer}:{}),lines:[],lineIds:new Set()});const o=batch.get(k);
+        const source={file:f.name,row:i+2,date:d,status:st,orderTime:text(r[c.date]),orderStatus:text(r[c.status]),store:text(r[c.store]),marketplaceStore:identity.marketplaceStore,sku};
+        if(!batch.has(k)){batch.set(k,{...identity,...(customer?{customer}:{}),lines:[],lineIds:new Set()});sources.set(k,source);}const o=batch.get(k);
         if(customer&&o.customer)for(const field of ['buyerHash','province','country']){if(o.customer[field]&&customer[field]&&o.customer[field]!==customer[field])o.customer[field]='';}
-        if(o.date!==d||o.status!==st)throw Error(`${f.name}: order ${id} has conflicting dates/statuses within the export. Resolve before importing.`);
+        if(o.date!==d||o.status!==st){const first=sources.get(k),error=Error(`Order ${id} has conflicting dates/statuses within the export. ${first.file}, row ${first.row}: ${first.date} / ${first.status}; ${f.name}, row ${i+2}: ${d} / ${st}. Check Order Time and Order Status for this order in all export parts, then correct or re-export the complete batch.`);error.code='order-conflict';error.details={kind:'order-conflict',orderId:id,platform:p,store:s,rows:[first,source]};throw error;}
         const lineId=c.line>=0?text(r[c.line]):'';if(lineId&&o.lineIds.has(lineId)){duplicates++;continue;}if(lineId)o.lineIds.add(lineId);
         o.lines.push({sku,product:text(r[c.product]),price,qty,...(enrichment.line?.(r,c)||{})});lines++;
       }
