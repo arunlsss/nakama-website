@@ -29,3 +29,21 @@ test('opaque sales transport failure keeps stock/PO workspace usable and missing
 test('failed initial stock load cannot enable editing or overwrite an unknown shared workspace',async()=>{
  const h=harness();h.delay(Promise.reject(Object.assign(Error('internal [0]'),{code:'functions/internal'})));await flush();const el=id=>h.w.document.getElementById(id);a.equal(el('stock-workspace').hidden,true);a.equal(el('upload-stock').disabled,true);a.equal(el('save').disabled,true);a.match(el('stock-error').textContent,/shared stock workspace/);a.equal(h.savedCalls(),0);h.dom.window.close();
 });
+
+test('weekly calendar retains stockouts before replenishment, switches sales modes and clears private data on revocation',async()=>{
+ const h=harness('viewer'),state=fixture(),sku=state.skus[0].sku,today=S.today(),weekday=new Date(today+'T00:00:00Z').getUTCDay(),monday=S.shift(today,8-(weekday||7));
+ state.snapshot.date=S.shift(monday,-1);state.snapshot.rows[0].onhand=2;state.settings.horizon=30;state.pos[0].lines[0].eta=S.shift(monday,4);state.pos[0].lines[0].qty=20;
+ h.delay(Promise.resolve({state,revision:'rev'}));h.report({statsVersion:2,coverage:true,end:today,rows:[{sku,rate7:1,rate30:1,max7:4,max30:4,min7:0,min30:0}]});await flush();const doc=h.w.document,el=id=>doc.getElementById(id),cell=()=>doc.querySelector('#calendar-rows [data-week="'+monday+'"]');
+ a.equal(cell().querySelector('.calendar-balance').textContent,'17');a.ok(cell().classList.contains('calendar-stockout'));a.match(cell().textContent,/Stockout/);a.match(cell().textContent,/\+20 PO units/);
+ el('rate-logic').value='min';el('rate-logic').dispatchEvent(new h.w.Event('change'));a.equal(cell().querySelector('.calendar-balance').textContent,'22');a.equal(cell().classList.contains('calendar-stockout'),false);a.equal(h.savedCalls(),0);
+ cell().querySelector('button').click();a.equal(el('sku-dialog').open,true);el('sku-dialog').close();
+ for(let i=0;i<2&&!el('calendar-next').disabled;i++)el('calendar-next').click();a.match(el('calendar-rows').textContent,/partial week/);a.equal(el('calendar-next').disabled,true);
+ el('sku-search').value='NO_MATCH';el('sku-search').dispatchEvent(new h.w.Event('input'));a.match(el('calendar-rows').textContent,/No SKUs match/);
+ await h.revoke();for(const id of ['calendar-rows','calendar-head','calendar-month','calendar-caption'])a.equal(el(id).textContent,'');h.dom.window.close();
+});
+
+test('weekly calendar labels unavailable rates and does not color them as zero stock',async()=>{
+ const h=harness();h.report({statsVersion:2,coverage:false,end:S.today(),rows:[]});await flush();const doc=h.w.document;
+ a.match(doc.getElementById('calendar-rows').textContent,/Unavailable/);a.equal(doc.querySelector('#calendar-rows .calendar-stockout'),null);
+ doc.querySelector('[data-stock-tab="pos"]').click();a.equal(doc.getElementById('stock-calendar').hidden,true);h.dom.window.close();
+});
