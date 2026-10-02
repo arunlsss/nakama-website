@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "node tests/core.test.cjs && node tests/ui.test.cjs && node tests/mobile-auth.test.cjs && node tests/deployment.test.cjs",
+    "test": "node tests/core.test.cjs && node --test tests/canonical-storage.test.cjs tests/customer.test.cjs && node tests/ui.test.cjs && node tests/mobile-auth.test.cjs && node tests/deployment.test.cjs",
     "test:emulators": "node scripts/emulator-tests.cjs",
     "configure": "node scripts/configure.cjs",
     "deploy": "node scripts/deploy.cjs",

@@ -144,9 +144,19 @@ The frontend holds summaries in memory. It does not read or write raw orders to 
 
 Source files and revisions are retained. No automatic deletion/lifecycle policy is included. Failed staging objects can remain, but cannot become active reports. Configure retention after deciding your business retention period; do not delete the active canonical snapshot. Set a Google Cloud budget alert to monitor usage. Alerts are not spending caps.
 
+## Updating canonical history storage
+
+If an import reports `Canonical data exceeds 256 MiB`, update the local repository through GitHub Desktop or `git pull origin main`, then deploy all three snapshot consumers from `backend` before importing again:
+
+```sh
+npx firebase deploy --only functions:nakama:nkmProcessImport,functions:nakama:nkmCustomerInsights,functions:nakama:nkmStockDemand --project nakama-sales
+```
+
+A failed import did not replace the active report. After deployment, refresh Management and upload every part of the original export together as a new import. If a pending job is still shown, use Imports → Check pending import to clear its failed status before uploading. Do not delete previous reports or raw exports to work around this limit. No separate manual data migration is needed.
+
 ## Limits and tests
 
-Batch limits: 1–40 unique files, 32 MiB per file, 128 MiB total, 600,000 rows. Workspace limits: one million orders and 256 MiB of uncompressed canonical JSON. These are application limits, not a capacity benchmark. Large workbooks can exceed memory/time before reaching them. Processing runs one import at a time with a recovery lease; old reports remain published on failure.
+Batch limits: 1–40 unique files, 32 MiB per file, 128 MiB total, 600,000 rows. Workspace limits: one million orders and 1 GiB of uncompressed canonical JSON. New revisions store canonical history in gzip parts of at most 16 MiB of uncompressed JSON each, with a small manifest saved last. Every part is checked for integrity and record counts on read. Existing single-file snapshots remain readable up to their original 256 MiB limit; a successful import writes a new revision using the parts format without deleting older revisions. These are application limits, not a capacity benchmark. Large workbooks can exceed memory/time before reaching them. Processing runs one import at a time with a recovery lease; old reports remain published on failure.
 
 Firestore summary chunks stay below 160 KiB. Report responses use at most 112 KiB for row payload plus a small response envelope and 500 rows. The browser loads one month. It currently loads all SKU summary pages for that month, so very large months still need multiple megabytes. Future server-side SKU filtering can reduce this further.
 
