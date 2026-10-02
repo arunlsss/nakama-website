@@ -33,8 +33,8 @@ export async function start(onSession,onError,onUpdate){
   if(!user){onSession(null);return;}
   try{
    await user.getIdToken(true);const state=await call('nkmWorkspace');if(current!==generation)return;
-   onSession({user,role:state.role,state});
-   stopWatching=F.onSnapshot(F.doc(db,'workspace/main'),snap=>{if((snap.data()?.revision||null)!==state.revision)onUpdate();},e=>{if(current!==generation)return;onSession({blocked:true,user,error:authError(e,'workspace')});onError(e);});
+   onSession({user,role:state.role,state});let observedRevision=state.revision;
+   stopWatching=F.onSnapshot(F.doc(db,'workspace/main'),snap=>{if(current!==generation)return;const next=snap.data()?.revision||null;if(next!==observedRevision){observedRevision=next;onUpdate?.();}},e=>{if(current!==generation)return;onSession({blocked:true,user,error:authError(e,'workspace')});onError(e);});
   }catch(e){if(current===generation)onSession({blocked:true,user,error:authError(e,'workspace')});}
  };
  F.onAuthStateChanged(auth,refreshSession);
