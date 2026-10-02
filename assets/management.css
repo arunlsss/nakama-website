@@ -82,3 +82,19 @@ button:focus-visible,a:focus-visible,[data-chart-detail]:focus-visible{outline:3
 .sidebar{z-index:20}.sidebar nav{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}.sidebar>.brand,.sidebar>.workspace-label,.sidebar>.sidebar-bottom{flex-shrink:0}.sidebar a.nav-item{display:block;text-decoration:none}.nav-section-label{padding:16px 12px 4px;color:var(--muted);font-size:13px;font-weight:600}.sidebar .stock-subnav{padding-left:24px}#overview-view,#stores-view,#sku-view,#health-view,#sources-view,#imports-view,#stock-overview,#stock-pos{scroll-margin-top:24px}
 
 html,.sidebar nav{scroll-behavior:smooth}
+
+/* Keep authenticated tools mounted while switching workspace sections. */
+.auth-pending #auth-form,.auth-pending #auth-retry,.auth-pending #auth-signout,.auth-pending .auth-card>a{display:none!important}
+.workspace-external #monthly-gmv,.workspace-external .period-card,.workspace-external main>.filters,.workspace-external #notice{display:none!important}
+.workspace-panel{min-width:0;scroll-margin-top:24px}
+.workspace-frame{display:block;border:0;width:100%;height:500px;background:var(--bg)}
+[data-embedded=true] .sidebar,[data-embedded=true] .mobile-nav,[data-embedded=true] main>header .header-top,[data-embedded=true] #signout,[data-embedded=true] .actions>a,[data-embedded=true] #monthly-gmv{display:none!important}
+[data-embedded=true] main{margin:0;padding:0 0 30px;max-width:none}
+[data-embedded=true] main>header{min-height:0;border:0;padding:16px 0}
+[data-embedded=true] .intro{margin-top:16px}
+[data-embedded=true] body.auth-open main{height:auto}
+[data-embedded=true] .auth-pending .auth-card{visibility:hidden}
+.receipt-history{display:grid;gap:12px;margin-top:16px}.receipt-history:empty{display:none}
+.receipt-reconciliation{display:grid;gap:14px}.receipt-reconciliation label{display:flex;flex-direction:row;align-items:start;gap:12px;padding:14px;background:var(--subtle);border-radius:10px;color:var(--ink)}
+.receipt-reconciliation input{min-height:22px;width:22px;flex-shrink:0;accent-color:var(--red)}.receipt-reconciliation small{display:block;font-size:14px;color:var(--muted);margin-top:5px}
+@media(max-width:850px){body:not(.stock-page):not(.customer-page)>.mobile-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.workspace-frame{min-width:0}}

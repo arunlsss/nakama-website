@@ -1,4 +1,20 @@
-# Stock Forecast v1
+# Stock Forecast
+
+## Independent receipts and persistent Management workspace (2 October 2026)
+
+Pull this update in GitHub Desktop, then run from `backend`:
+
+```sh
+npx firebase deploy --only functions:nakama:nkmStockForecast --project nakama-sales
+```
+
+This deployment is required before saving the new receipt settings. The workspace schema is now version 2. Existing version-1 workspaces migrate on load, preserving existing stock, POs and historical receipt assumptions. An older backend rejects the new schema instead of silently discarding the independent-stock settings. No new database rules or services are needed. If Firebase reports an invoker-policy error, restore browser access for `nkmstockforecast` using the Cloud Run configuration described below, not `nkmstockdemand`.
+
+Open `management.html`. Overview, Store Performance and Product Insights now share one scrolling sales page. Stock Forecast and Customer Insight open inside the same Management workspace and remain mounted between switches. Sign-in, membership validation and the sales-revision listener are owned by the parent workspace. Loading an existing session displays a connecting state instead of briefly showing the credential form. Reports are reused in memory only, invalidated when imported sales change, and cleared when sign-in or membership is lost. No report or customer data is written to local storage. Explicit Refresh still fetches current data.
+
+For received POs, choose **Add to Nakama stock** when the inventory export does not already contain the received units, even when the receipt is on the snapshot date. Choose **Already included in starting stock** only when the export includes them. Receipts after the snapshot date enter projections on their actual dates. Receipts on or before the snapshot date marked Add become independent opening-stock adjustments. Save workspace to share the change.
+
+For previously recorded receipts, edit the PO and update the stock-treatment selector in its receipt history, then Apply PO and Save workspace. Do not create a duplicate receipt for the same units. When importing a replacement stock export, review the reconciliation checklist. Checked receipts are included in the new starting balance and are not added again; unchecked receipts remain separate additions. Past stockout days remain visible in charts and the weekly calendar, but the attention count and First shortage warning now refer to today or later, not an already-resolved earlier shortage.
 
 The page is `stock-forecast.html`. Stock and POs are saved in the private `stockForecast/main` Firestore document through authenticated functions. Viewer members can read; importer and admin members can edit. Saves use a revision check so a second device cannot silently overwrite another user's changes.
 

@@ -11,6 +11,26 @@ test('reimport replaces the snapshot and preserves fixed PO quantities and SKU a
 test('recommendation covers demand after the new ETA, using already scheduled arrivals and one buffer',()=>{const s=fixture();s.skus[0].rate=100;s.settings.coverageDays=30;s.settings.safetyDays=15;const r=S.forecast(s,s.skus[0].sku,s.snapshot.date);a.equal(r.recommendation,4500);s.pos=[po('P','2026-10-16',4000)];a.equal(S.forecast(s,s.skus[0].sku,s.snapshot.date).recommendation,500);});
 test('server validation rejects invalid quantities, excess receipts and duplicate identifiers',()=>{const s=fixture();s.pos=[po('P','2026-09-21',1000)];a.deepEqual(S.validate(s),s);s.pos[0].lines[0].qty=-1;a.throws(()=>S.validate(s),/ordered quantity/);s.pos[0].lines[0].qty=1000;s.pos[0].lines[0].receipts=[{id:'x',date:'2026-09-01',qty:1001}];a.throws(()=>S.validate(s),/exceeds/);s.pos[0].lines[0].receipts=[];s.pos.push(clone(s.pos[0]));a.throws(()=>S.validate(s),/Duplicate PO/);});
 function clone(v){return JSON.parse(JSON.stringify(v));}
+test('independent same-day receipts add stock once, included receipts do not, and legacy workspaces migrate safely',()=>{
+ const s=fixture();s.snapshot.date=S.today();s.snapshot.rows[0].onhand=10;s.skus[0].rate=1;
+ s.pos=[po('P',S.today(),100,'confirmed',[{id:'a',date:S.today(),qty:100,stockEffect:'add'}])];
+ const saved=S.validate(s);a.equal(saved.version,2);a.equal(saved.pos[0].lines[0].receipts[0].stockEffect,'add');
+ let r=S.forecast(saved,s.skus[0].sku);a.equal(r.opening,110);a.equal(r.receiptAdjustments,100);a.equal(r.days[0].balance,109);a.equal(r.days.reduce((n,d)=>n+d.inbound,0),0);a.equal(r.pipeline,0);
+ saved.pos[0].lines[0].receipts[0].stockEffect='included';r=S.forecast(saved,s.skus[0].sku);a.equal(r.opening,10);
+ s.version=1;delete s.pos[0].lines[0].receipts[0].stockEffect;a.equal(S.validate(s).version,2);a.equal(S.forecast(S.validate(s),s.skus[0].sku).opening,10);
+ s.pos[0].lines[0].receipts[0].stockEffect='incorrect';a.throws(()=>S.validate(s),/how the receipt affects stock/);
+});
+test('replacement stock imports reconcile each receipt without double-counting or losing independent additions',()=>{
+ const s=fixture();s.snapshot.date=S.today();s.skus[0].rate=1;s.pos=[po('P',S.today(),100,'confirmed',[{id:'a',date:S.today(),qty:100,stockEffect:'add'}])];
+ const snap={...s.snapshot,rows:[{...s.snapshot.rows[0],onhand:110}]},p=s.pos[0],l=p.lines[0],key=S.receiptKey(p,l,l.receipts[0]);
+ let next=S.mergeSnapshot(s,snap,[key]);a.equal(next.pos[0].lines[0].receipts[0].stockEffect,'included');a.equal(S.forecast(next,l.sku).opening,110);next=S.mergeSnapshot(next,snap,[key]);a.equal(S.forecast(next,l.sku).opening,110);
+ const without={...snap,rows:[{...snap.rows[0],onhand:10}]};next=S.mergeSnapshot(s,without,[]);a.equal(S.forecast(next,l.sku).opening,110);a.equal(next.pos[0].lines[0].qty,100);
+});
+test('replenishment resolves upcoming shortage warnings while preserving the earlier shortage history',()=>{
+ const s=fixture();s.snapshot.date=S.shift(S.today(),-10);s.snapshot.rows[0].onhand=0;s.skus[0].rate=1;s.settings.horizon=30;s.settings.safetyDays=0;
+ s.pos=[po('P',S.today(),100,'confirmed',[{id:'a',date:S.today(),qty:100,stockEffect:'add'}])];
+ const r=S.forecast(s,s.skus[0].sku);a.equal(r.firstShortage,null);a.equal(r.historicalShortage,S.shift(s.snapshot.date,1));a.equal(r.days.find(d=>d.date===S.today()).balance,99);
+});
 test('online demand uses eligible units, excludes manual/cancelled/processing records and exposes missing months',()=>{const order=(status,platform,date,qty)=>({status,platform,date,lines:[{sku:'SKU',qty}]});const records=[order('Completed','Shopee','2026-09-28',70),order('To Ship','TikTok','2026-09-15',30),order('Canceled','Shopee','2026-09-28',999),order('Completed','Manual','2026-09-28',999),order('Platform Processing','Shopee','2026-09-28',999)];let r=S.demand(records,'2026-09-30',['2026-09']);a.equal(r.rows[0].rate7,10);a.equal(r.rows[0].units30,100);a.equal(r.coverage,true);r=S.demand(records,'2026-10-01',['2026-09']);a.equal(r.coverage,false);a.deepEqual(r.missingMonths,['2026-10']);});
 
 test('unreceived ETA before today stays overdue even with an older snapshot; new orders use today for lead time',()=>{const s=fixture();s.pos=[po('P','2026-09-21',5000)];const r=S.forecast(s,s.skus[0].sku,'2026-09-25');a.equal(r.overdue.length,1);a.equal(r.days.find(d=>d.date==='2026-09-21').inbound,0);a.equal(r.proposedETA,'2026-11-09');});
