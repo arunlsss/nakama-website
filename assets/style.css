@@ -1460,5 +1460,16 @@ h1,h2,h3{line-height:1.25;letter-spacing:.015em}
 .dpopup-name{font-size:16px}.dpopup-desc,.dpopup-tap-hint,.diagram-label{font-size:14px}
 @media(max-width:600px){.spray-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.spray-card-name{font-size:.9rem;padding:10px 8px;white-space:normal}.product-card-name{font-size:.95rem}.product-card-desc{font-size:.9rem}.navbar-brand-name{font-size:.95rem}.product-modal-box{max-width:calc(100vw - 24px)}}
 
-.navbar-inner{gap:20px}.navbar-center{position:static;transform:none;gap:20px}.navbar-logo{flex-shrink:0}.navbar-links{gap:18px}
-@media(max-width:1100px){.navbar-brand-name{display:none}.navbar-center{flex:1;justify-content:flex-start}.navbar-links{display:none}.navbar-hamburger{display:flex}.navbar-inner{justify-content:space-between}.navbar-mobile-menu.open{display:block}}
+/* Keep the brand, navigation and shop action in stable, separate groups. */
+.navbar-inner{max-width:1440px;gap:24px}
+.navbar-center{position:static;transform:none;flex:1;min-width:0;justify-content:center}
+.navbar-logo{flex-shrink:0;gap:10px}
+.navbar-logo img{height:72px;width:auto}
+.navbar-links{flex-wrap:nowrap;align-items:center;gap:4px}
+.navbar-links li{flex:0 0 auto}
+.navbar-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 10px;line-height:1.4;white-space:nowrap}
+.navbar-hamburger{flex-shrink:0;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+@media(min-width:1200px){.navbar-mobile-menu.open{display:none}}
+@media(max-width:1399px){.navbar-brand-name{display:none}}
+@media(max-width:1199px){.navbar-center{display:none}.navbar-links{display:none}.navbar-hamburger{display:flex}.navbar-shopee-btn{margin-left:auto}.navbar-mobile-menu.open{display:block}}
+@media(max-width:600px){.navbar-inner{padding:0 16px;gap:12px}.navbar-logo img{height:64px}.navbar-shopee-btn{padding:9px 12px}}
