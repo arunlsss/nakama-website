@@ -28,22 +28,22 @@
 @font-face {
   font-family: 'DB Helvethaica X';
   src: url('fonts/DB Helvethaica X v3.2.ttf') format('truetype');
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0E00-0E7F; size-adjust: 130%;
 }
 @font-face {
   font-family: 'DB Helvethaica X';
   src: url('fonts/DB Helvethaica X Med v3.2.ttf') format('truetype');
-  font-weight: 500; font-style: normal; font-display: swap;
+  font-weight: 500; font-style: normal; font-display: swap; unicode-range: U+0E00-0E7F; size-adjust: 130%;
 }
 @font-face {
   font-family: 'DB Helvethaica X';
   src: url('fonts/DB Helvethaica X Bd v3.2.ttf') format('truetype');
-  font-weight: 700; font-style: normal; font-display: swap;
+  font-weight: 700; font-style: normal; font-display: swap; unicode-range: U+0E00-0E7F; size-adjust: 130%;
 }
 @font-face {
   font-family: 'DB Helvethaica X';
   src: url('fonts/DB Helvethaica X Blk v3.2.ttf') format('truetype');
-  font-weight: 900; font-style: normal; font-display: swap;
+  font-weight: 900; font-style: normal; font-display: swap; unicode-range: U+0E00-0E7F; size-adjust: 130%;
 }
 @font-face {
   font-family: 'Euclid Circular A';
@@ -110,8 +110,8 @@
   --gray-400:     #888888;
   --gray-200:     #cccccc;
   --white:        #ffffff;
-  --font-display: 'Euclid Circular A', 'Impact', sans-serif;
-  --font-body:    'DB Helvethaica X', 'Euclid Circular A', sans-serif;
+  --font-display: 'Euclid Circular A', 'DB Helvethaica X', sans-serif;
+  --font-body:    'Euclid Circular A', 'DB Helvethaica X', sans-serif;
   --section-pad:  80px;
   --container:    1200px;
   --radius:       8px;
@@ -122,13 +122,13 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-size: 18px; }
 body {
   background: var(--black);
   color: var(--white);
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 img { display: block; max-width: 100%; }
@@ -1446,3 +1446,19 @@ body[data-page="find-wiper"] .wiper-result-card  { padding: 16px; }
   .product-modal-variant-btns .product-modal-variant-btn--tiktok { flex: 1; justify-content: center; }
   .product-modal-variant-dual { grid-template-columns: 1fr; }
 }
+
+/* Readable public-site typography. Thai glyphs use DB; Latin uses Euclid. */
+h1,h2,h3{line-height:1.25;letter-spacing:.015em}
+.navbar-links a,.navbar-mobile-menu a{font-size:1rem}
+.section-label,.hero-eyebrow,.footer-heading,.av-contact-group-lbl{font-size:.875rem}
+.product-card-name{font-size:1rem;line-height:1.5;overflow-wrap:anywhere}
+.product-card-desc,.spray-section-intro p,.diagram-teaser p,.cta-banner p,.av-story-text p{font-size:1rem;line-height:1.8}
+.btn,.btn-white,.product-card-btn,.footer-links a,.footer-brand p,.products-page-sub,.products-diagram-sub,.av-hero-sub,.av-why-desc,.av-cta-sub{font-size:1rem}
+.spray-card-name,.footer-bottom p,.av-stat-lbl{font-size:.9rem;line-height:1.6}
+.wiper-card-sub,.wiper-dd-item,.wiper-dd-empty,.wiper-select,.wiper-result-year,.product-modal-desc,.product-modal-variant-name{font-size:1rem;line-height:1.6}
+.product-modal-tag,.product-modal-variant-label,.product-modal-variant-btn,.wiper-legend-item,.wlbl,.wunit{font-size:.875rem}
+.dpopup-name{font-size:16px}.dpopup-desc,.dpopup-tap-hint,.diagram-label{font-size:14px}
+@media(max-width:600px){.spray-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.spray-card-name{font-size:.9rem;padding:10px 8px;white-space:normal}.product-card-name{font-size:.95rem}.product-card-desc{font-size:.9rem}.navbar-brand-name{font-size:.95rem}.product-modal-box{max-width:calc(100vw - 24px)}}
+
+.navbar-inner{gap:20px}.navbar-center{position:static;transform:none;gap:20px}.navbar-logo{flex-shrink:0}.navbar-links{gap:18px}
+@media(max-width:1100px){.navbar-brand-name{display:none}.navbar-center{flex:1;justify-content:flex-start}.navbar-links{display:none}.navbar-hamburger{display:flex}.navbar-inner{justify-content:space-between}.navbar-mobile-menu.open{display:block}}
