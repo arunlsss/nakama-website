@@ -31,3 +31,22 @@ exports.nkmCustomerInsights=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,con
  let records=[];if(revision){const published=(await revisionRef(revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('data-loss','Published orders unavailable.');const [bytes]=await bucket.file(published.snapshot).download({validation:'crc32c'});records=C.unpack(bytes);}
  const report=Customer.summary(records,args);await member(request);return {...report,revision,months:workspace?.months||[],updatedAt:workspace?.updatedAt?.toMillis?.()||null};
 });
+
+// Stock documents remain private; only enabled members may read or mutate them.
+const Stock=require('./lib/stock-engine');
+exports.nkmStockForecast=endpoint({},async request=>{
+ const op=request.data?.op||'load';
+ if(op==='load'){await member(request);const saved=(await db.doc('stockForecast/main').get()).data();await member(request);return {revision:saved?.revision||null,state:saved?.state||Stock.empty(),updatedAt:saved?.updatedAt?.toMillis?.()||null};}
+ if(op!=='save')C.fail('invalid-argument','Unknown stock operation.');
+ const user=await member(request,['importer','admin']);let state;try{state=Stock.validate(request.data?.state);}catch(e){C.fail('invalid-argument',e.message);}
+ if(Buffer.byteLength(JSON.stringify(state))>650000)C.fail('resource-exhausted','Forecast workspace exceeds 650 KB. Archive old POs before adding more.');
+ const expected=request.data?.revision||null;if(expected!==null)C.uuid(expected);const ref=db.doc('stockForecast/main'),revision=C.randomId(),now=Timestamp.now();
+ await db.runTransaction(async tx=>{const [saved,m]=await Promise.all([tx.get(ref),tx.get(db.doc('members/'+user.uid))]);C.role(request.auth,m.data(),['importer','admin']);if((saved.data()?.revision||null)!==expected)C.fail('aborted','Another user changed the stock forecast. Export your draft, then Refresh before saving.');tx.set(ref,{state,revision,updatedAt:now,updatedBy:user.uid});});
+ return {state,revision,updatedAt:now.toMillis()};
+});
+exports.nkmStockDemand=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concurrency:1,maxInstances:2},async request=>{
+ await member(request);const end=request.data?.end||null;if(end!==null&&!Stock.validDate(end))C.fail('invalid-argument','Choose a valid sales end date.');
+ const workspace=(await db.doc('workspace/main').get()).data();let records=[];
+ if(workspace?.revision){const r=(await revisionRef(workspace.revision).get()).data();if(r?.state!=='published'||!r.snapshot)C.fail('data-loss','Published orders unavailable.');const [bytes]=await bucket.file(r.snapshot).download({validation:'crc32c'});records=C.unpack(bytes);}
+ const report=Stock.demand(records,end,workspace?.months||[]);await member(request);return {...report,revision:workspace?.revision||null};
+});

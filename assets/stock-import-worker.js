@@ -1,0 +1,2 @@
+importScripts('vendor/xlsx.full.min.js','stock-engine.js');
+self.onmessage=e=>{try{const {buffer,name,date}=e.data,w=XLSX.read(buffer,{type:'array',dense:true,raw:true});if(w.Workbook?.WBProps?.date1904)throw Error('Convert the workbook from the 1904 date system first.');const sheet=w.Sheets['Single SKU']||w.Sheets[w.SheetNames[0]],rows=XLSX.utils.sheet_to_json(sheet,{header:1,raw:true,defval:null});self.postMessage({snapshot:NKMStock.parseInventory(rows[0]||[],rows.slice(1),name,date)});}catch(error){self.postMessage({error:error.message});}};
