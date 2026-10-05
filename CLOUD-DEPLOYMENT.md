@@ -6,13 +6,14 @@ The website includes a Firebase backend and cloud-connected Management dashboard
 
 Your public Firebase web configuration is included in `nakama-web-config.json`. The website's `assets/cloud-config.js` and deployment guard's `backend/nakama-project.json` are already configured for this project. These files contain public identifiers, not administrator credentials.
 
-After enabling Email/Password, creating your Authentication user, and creating the default Firestore database and Storage bucket, open a terminal in the extracted website folder and run:
+After enabling Email/Password, creating your Authentication user, and creating the default Firestore database and Storage bucket, install the Google Cloud CLI if needed, open a terminal in the extracted website folder and run:
 
 ```sh
 cd backend
 npm ci
 npm ci --prefix functions
 npx firebase login
+gcloud auth login
 npm run deploy -- --project nakama-sales
 ```
 
@@ -34,6 +35,19 @@ Pull the latest GitHub changes, open a terminal in the repository's `backend` fo
 ```sh
 npm run deploy -- --project nakama-sales
 ```
+
+The deploy script configures browser transport for the six account services after Firebase finishes. It uses Cloud Run's `--no-invoker-iam-check` setting, which Google documents for projects with domain-restricted sharing. It does not modify organization policies or grant `allUsers` an IAM role. Firebase's callable handler continues to validate tokens; the account endpoints continue to require sign-in and enabled admin roles where applicable. Registration stays pending with no workspace access until verification and approval.
+
+If the initial creation of these six functions reports **Failed to set invoker**, or an `allUsers` binding reports **FAILED_PRECONDITION: users do not belong to a permitted customer**, the function code may already be deployed. From the `backend` folder run:
+
+```sh
+npm run browser-access -- --project nakama-sales
+npm run deploy -- --project nakama-sales
+```
+
+The recovery command discovers the actual Cloud Run service for each of `nkmAccountProfile`, `nkmAccounts`, `nkmLinkUserId`, `nkmRegister`, `nkmReviewAccount` and `nkmUserLogin`, and applies the supported transport setting only to those services. It stops on the first failure. The Firebase CLI does not reapply public IAM bindings when updating these already-created callable functions; the deploy script reapplies the service setting after each successful update.
+
+This service change requires **Cloud Run Admin** permission on the relevant services. If your organization enforces `run.managed.requireInvokerIam` or another rule requiring the IAM invoker check, the update will be rejected. Contact the organization administrator to approve a supported access design; the script does not change or override that policy. Reference: [Google Cloud public-access guidance](https://docs.cloud.google.com/run/docs/authenticating/public#invoker_check).
 
 The account endpoints create Firebase users and assign claims after approval. Their runtime service account needs **Firebase Authentication Admin**, replacing the read-only Authentication Viewer permission if that was used earlier. After deployment, grant that permission to the actual deployed runtime identity once:
 
