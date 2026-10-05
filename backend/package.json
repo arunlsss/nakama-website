@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "node tests/core.test.cjs && node --test tests/canonical-storage.test.cjs tests/customer.test.cjs && node tests/ui.test.cjs && node tests/mobile-auth.test.cjs && node tests/deployment.test.cjs",
+    "test": "node tests/core.test.cjs && node --test tests/canonical-storage.test.cjs tests/customer.test.cjs && node tests/ui.test.cjs && node tests/mobile-auth.test.cjs && node tests/deployment.test.cjs && node --test tests/accounts.test.cjs tests/accounts-ui.test.cjs",
     "test:emulators": "node scripts/emulator-tests.cjs",
     "configure": "node scripts/configure.cjs",
     "deploy": "node scripts/deploy.cjs",
     "grant-role": "node scripts/grant-role.cjs",
-    "build:sdk": "node scripts/build-sdk.cjs"
+    "build:sdk": "node scripts/build-sdk.cjs",
+    "test:accounts": "node --test tests/accounts.test.cjs tests/accounts-ui.test.cjs"
   },
   "devDependencies": {
     "firebase-tools": "15.32.0",

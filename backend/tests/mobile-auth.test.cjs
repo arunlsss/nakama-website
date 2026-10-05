@@ -3,7 +3,7 @@ const root=path.resolve(__dirname,'../..'),read=p=>fs.readFileSync(path.join(roo
 function cloudHarness(extra={}){
  let observer;const session={},memory={},sdk={initializeApp:()=>({}),initializeAuth:(app,options)=>{sdk.options=options;return {currentUser:null};},browserSessionPersistence:session,inMemoryPersistence:memory,getFunctions:()=>({}),getStorage:()=>({}),getFirestore:()=>({}),onAuthStateChanged:(auth,fn)=>{observer=fn;},httpsCallable:()=>async()=>({data:{role:'viewer',revision:'r1'}}),doc:()=>({}),onSnapshot:()=>()=>{},...extra};
  const ctx=vm.createContext({window:{NKM_CLOUD_CONFIG:{firebase:{projectId:'nakama-sales',apiKey:'public'}}},mockSDK:sdk,sessionStorage:{getItem:()=>{throw Error('Blocked');},setItem:()=>{throw Error('Blocked');},removeItem:()=>{throw Error('Blocked');}}});
- vm.runInContext(read('assets/cloud.js').replace("import * as F from './vendor/firebase-sdk.js?v=glass-20261001';",'const F=mockSDK;').replace(/\bexport /g,''),ctx);
+ vm.runInContext(read('assets/cloud.js').replace(/import \* as F from [^;]+;/,'const F=mockSDK;').replace(/import \{mountAuthUI\} from [^;]+;/,'const mountAuthUI=()=>null;').replace(/\bexport /g,''),ctx);
  return {sdk,ctx,session,memory,notify:user=>observer(user)};
 }
 test('restricted browsers get a memory fallback and pending imports remain recoverable in the open page',async()=>{
@@ -35,3 +35,4 @@ test('sign-in form exposes the password only on request, prevents duplicate subm
  w.cloudMock.signIn=async()=>{throw {code:'auth/network-request-failed'};};el('auth-form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(r=>setTimeout(r,0));assert.match(el('auth-error').textContent,/connection/);assert.equal(el('auth-password').value,'Secret!');assert.equal(el('auth-submit').disabled,false);
  assert.equal(el('auth-email').getAttribute('autocapitalize'),'none');dom.window.close();
 });
+

@@ -78,4 +78,5 @@ $('store-sort').onchange=render;
 $('action-grid').onclick=e=>{const target=e.target.closest('[data-view]');if(target)changeView(target.dataset.view);};
 for(const b of document.querySelectorAll('[data-product-metric]'))b.onclick=()=>{NKMInsightUI.setProductMetric(b.dataset.productMetric);renderSku();};
 render();
-import('./cloud.js?v=workspace-20261002').then(async api=>{cloud=api;await api.start(sessionChanged,e=>{},()=>{if(access()){workspaceShell?.update();toast('New shared reports are available. Tap Refresh.');}});}).catch(e=>{sessionChanged({setup:true});$('auth-error').textContent='Sign-in service could not load. Refresh this page or open it directly in Safari or Chrome. '+(e.code?'('+e.code+')':'');});
+import('./cloud.js?v=accounts-20261005').then(async api=>{cloud=api;await api.start(sessionChanged,e=>{},()=>{if(access()){workspaceShell?.update();toast('New shared reports are available. Tap Refresh.');}});}).catch(e=>{sessionChanged({setup:true});$('auth-error').textContent='Sign-in service could not load. Refresh this page or open it directly in Safari or Chrome. '+(e.code?'('+e.code+')':'');});
+

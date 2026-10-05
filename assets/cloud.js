@@ -1,4 +1,5 @@
-import * as F from './vendor/firebase-sdk.js?v=glass-20261001';
+import * as F from './vendor/firebase-sdk.js?v=accounts-20261005';
+import {mountAuthUI} from './auth-ui.js?v=accounts-20261005';
 const config=window.NKM_CLOUD_CONFIG;let auth,functions,storage,stopWatching;
 let bridge=null;try{if(new URLSearchParams(window.location?.search||'').get('embedded')==='1'&&window.parent!==window&&window.parent.location.origin===window.location.origin)bridge=window.parent.NKMWorkspaceBridge||null;}catch{}
 const reportPromises=new Map();
@@ -20,7 +21,8 @@ export function authError(error,stage='signin'){
  if(network.includes(code))return 'Could not reach the sign-in or report service. Check your connection, then try again.'+detail;
  if(['auth/too-many-requests','functions/resource-exhausted'].includes(code))return 'Too many attempts. Wait a few minutes before trying again.'+detail;
  if(code==='auth/invalid-email')return 'Enter a valid email address.'+detail;
- if(['auth/invalid-credential','auth/invalid-login-credentials','auth/wrong-password','auth/user-not-found'].includes(code))return 'The email and password were not accepted. Check your saved login and use Show to check the password.'+detail;
+ if(['auth/invalid-credential','auth/invalid-login-credentials','auth/wrong-password','auth/user-not-found','functions/unauthenticated'].includes(code)&&stage!=='workspace')return 'The User ID or email and password were not accepted. Check your saved login and use Show to check the password.'+detail;
+ if(['functions/already-exists','functions/invalid-argument','functions/failed-precondition'].includes(code))return error.message||'Check your account details.';
  if(code==='auth/user-disabled')return 'This account is disabled. Contact your administrator.'+detail;
  if(['auth/web-storage-unsupported','auth/unsupported-persistence-type'].includes(code))return 'This browser is blocking sign-in storage. Open this page directly in Safari or Chrome and try again.'+detail;
  if(['auth/operation-not-allowed','auth/unauthorized-domain','auth/invalid-api-key','auth/app-not-authorized','auth/configuration-not-found'].includes(code))return 'Sign-in configuration needs an administrator to check this website and its Firebase project.'+detail;
@@ -34,6 +36,8 @@ export function authError(error,stage='signin'){
 let refreshSession,pendingId=null;
 export async function start(onSession,onError,onUpdate){
  if(bridge){const unsubscribe=bridge.start(onSession,onError,onUpdate);window.addEventListener('pagehide',unsubscribe,{once:true});return;}
+ const ui=mountAuthUI({signIn,register,signOut,retrySession,accountProfile,linkUserId,verifyEmail,resetPassword,accounts,reviewAccount,authError});
+ const receive=onSession;onSession=next=>{const result=receive(next);ui?.session(next);return result;};
  if(!configured){onSession({setup:true});return;}
  const app=F.initializeApp(config.firebase);
  // Prefer this tab's session storage, with an SDK-supported fallback for restricted browsers.
@@ -43,15 +47,22 @@ export async function start(onSession,onError,onUpdate){
   const current=++generation;reportPromises.clear();stopWatching?.();stopWatching=null;onSession({loading:true});
   if(!user){onSession(null);return;}
   try{
-   await user.getIdToken();const state=await call('nkmWorkspace');if(current!==generation)return;
+   await user.getIdToken(true);const state=await call('nkmWorkspace');if(current!==generation)return;
    onSession({user,role:state.role,state});let observedRevision=state.revision;
    stopWatching=F.onSnapshot(F.doc(db,'workspace/main'),snap=>{if(current!==generation)return;const next=snap.data()?.revision||null;if(next!==observedRevision){observedRevision=next;reportPromises.clear();onUpdate?.();}},e=>{if(current!==generation)return;reportPromises.clear();onSession({blocked:true,user,error:authError(e,'workspace')});onError(e);});
   }catch(e){if(current===generation)onSession({blocked:true,user,error:authError(e,'workspace')});}
  };
  F.onAuthStateChanged(auth,refreshSession);
 }
-export const retrySession=()=>bridge?bridge.retrySession():refreshSession(auth.currentUser);
-export const signIn=(email,password)=>bridge?bridge.signIn(email,password):F.signInWithEmailAndPassword(auth,String(email).replace(/[\u200B-\u200D\uFEFF]/g,'').trim(),password);
+export const retrySession=async()=>{if(bridge)return bridge.retrySession();if(auth.currentUser)await F.reload(auth.currentUser);return refreshSession(auth.currentUser);};
+export const signIn=async(identifier,password)=>{if(bridge)return bridge.signIn(identifier,password);const value=String(identifier).replace(/[\u200B-\u200D\uFEFF]/g,'').trim();const email=value.includes('@')?value:(await call('nkmUserLogin',{userId:value,password})).email;return F.signInWithEmailAndPassword(auth,email,password);};
+export async function register(userId,email,password){const result=await call('nkmRegister',{userId,email,password});await F.signInWithEmailAndPassword(auth,result.email,password);try{await F.sendEmailVerification(auth.currentUser);}catch(e){return {...result,verificationError:authError(e)};}return result;}
+export const accountProfile=()=>call('nkmAccountProfile');
+export const linkUserId=userId=>call('nkmLinkUserId',{userId});
+export const verifyEmail=()=>F.sendEmailVerification(auth.currentUser);
+export const resetPassword=email=>F.sendPasswordResetEmail(auth,String(email).trim());
+export const accounts=cursor=>call('nkmAccounts',{cursor:cursor||null});
+export const reviewAccount=(uid,action,role)=>call('nkmReviewAccount',{uid,action,role});
 export const signOut=async()=>{if(bridge)return bridge.signOut();reportPromises.clear();remember(null);await F.signOut(auth);};
 export const workspace=()=>call('nkmWorkspace');
 export const customerInsights=args=>call('nkmCustomerInsights',args,560000);

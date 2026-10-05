@@ -1,6 +1,6 @@
 # Nakama cloud deployment
 
-The website now includes a Firebase backend and cloud-connected Management dashboard. It has no runtime dependency on Google Sheets, Apps Script or Google Drive. This package has not been deployed to a live Firebase project.
+The website includes a Firebase backend and cloud-connected Management dashboard. It has no runtime dependency on Google Sheets, Apps Script or Google Drive. GitHub Pages publishes the frontend; backend changes require a separate Firebase deployment.
 
 ## Your configured project: nakama-sales
 
@@ -26,6 +26,31 @@ npm run grant-role -- --project nakama-sales --email YOUR_LOGIN_EMAIL --role adm
 Replace `YOUR_LOGIN_EMAIL` with the email you created in Firebase Authentication. Sign out and sign in again after the grant. Publish the configured frontend from your own GitHub repository after backend deployment.
 
 You can skip the generic configuration command below. If you need to regenerate the configuration later, use `npm run configure -- --project nakama-sales --config ../nakama-web-config.json` from the backend folder. All remaining generic `YOUR_PROJECT_ID` placeholders refer to `nakama-sales`.
+
+## User ID login and registration update
+
+Pull the latest GitHub changes, open a terminal in the repository's `backend` folder, and run:
+
+```sh
+npm run deploy -- --project nakama-sales
+```
+
+The account endpoints create Firebase users and assign claims after approval. Their runtime service account needs **Firebase Authentication Admin**, replacing the read-only Authentication Viewer permission if that was used earlier. After deployment, grant that permission to the actual deployed runtime identity once:
+
+```sh
+NKM_AUTH_RUNTIME=$(gcloud functions describe nkmRegister --gen2 --region asia-southeast1 --project nakama-sales --format='value(serviceConfig.serviceAccountEmail)')
+test -n "$NKM_AUTH_RUNTIME" && gcloud projects add-iam-policy-binding nakama-sales --member="serviceAccount:$NKM_AUTH_RUNTIME" --role="roles/firebaseauth.admin"
+```
+
+Run `gcloud auth login` first if the Google Cloud CLI is not signed in. Grant the role only to the runtime service account, never to website users. Existing Firestore and bucket runtime permissions remain necessary.
+
+In Firebase Console → Authentication → Settings → Authorized domains, include `nakamaauto.com` and `www.nakamaauto.com` if both serve the site. Email/Password sign-in must remain enabled. Verification and reset emails use Firebase's Authentication templates and can be branded there.
+
+Registration is available on Management, Stock Forecast and Customer Insight. It accepts a User ID, password and valid email from any provider. User IDs have 3–32 ASCII letters/numbers/periods/underscores/hyphens and are case-insensitive. Passwords have 8–128 characters and are never trimmed or stored in Firestore. The private User ID lookup checks the password with Firebase before revealing the account email, then the browser signs into the original Firebase account. `functions/auth-config.json` contains the same public web API key as the frontend; `npm run configure` regenerates both configurations. That web API key must permit the Identity Toolkit API from the backend as well as the website; browser-referrer-only restrictions would block User ID sign-in.
+
+New accounts follow **Register → Verify email → Pending admin review → Active**. Registration creates no membership or role. An existing admin signs in and uses **Account requests** to approve verified accounts as Viewer, Importer or Admin, reject requests, or disable access. Role choices are never shown during registration. Approvals only take effect after the enabled membership and Firebase role claim agree. Pending users tap **Try again** after verification or approval to refresh their token. Existing accounts keep their current membership and may sign in with email, open **My account**, and choose a unique User ID for future logins with the same password.
+
+Verify with a fresh non-company email: confirm it cannot load shared data while pending, verify its inbox link, approve it as Viewer, and check User ID login on another device. A Viewer must not be able to upload orders, save stock or approve accounts. Also test incorrect credentials, a duplicate User ID, password recovery, and disabling the test account. Run `npm run test:accounts` for account-specific tests.
 
 ## 1. Create a dedicated Firebase project
 
@@ -80,9 +105,9 @@ The script checks that the project matches your Nakama configuration. Every depl
 
 Complete Firebase CLI setup prompts for the dedicated project. Storage rules read membership/import documents from Firestore; Firebase may ask to grant its Storage service identity this cross-service permission. If prompted for Artifact Registry cleanup, choose a retention period such as 7 days.
 
-The Functions runtime uses the default Compute Engine service account, typically `PROJECT_NUMBER-compute@developer.gserviceaccount.com`. If your project does not automatically grant sufficient runtime permissions, grant **Cloud Datastore User**, **Storage Object Admin** on the dedicated bucket, and **Firebase Authentication Viewer** to this runtime identity. The initial deployer should be a project owner or have the normal Firebase/Cloud Run deployment permissions. Do not grant these runtime roles to website users.
+The Functions runtime uses the default Compute Engine service account, typically `PROJECT_NUMBER-compute@developer.gserviceaccount.com`. If your project does not automatically grant sufficient runtime permissions, grant **Cloud Datastore User**, **Storage Object Admin** on the dedicated bucket, and **Firebase Authentication Admin** to this runtime identity for the registration and account-approval features. The initial deployer should be a project owner or have the normal Firebase/Cloud Run deployment permissions. Do not grant these runtime roles to website users.
 
-Callable endpoints allow browser SDK invocation, while every handler checks verified Firebase authentication and enabled membership. Keep the callable invocation setting; IAM-only invocation would reject ordinary Firebase browser sign-in tokens.
+Callable endpoints allow browser SDK invocation. Every report and stock handler checks verified Firebase authentication and enabled membership. Registration and credential verification are public but rate-limited; account profiles require sign-in, and role changes require an enabled admin. Keep the callable invocation setting; IAM-only invocation would reject ordinary Firebase browser sign-in tokens.
 
 ## 4. Grant administrator/member access
 
