@@ -41,3 +41,16 @@ th[aria-sort="ascending"] .stock-sort-arrows i:first-child,th[aria-sort="descend
 
 .stock-po-view .stock-planning{display:none}.sidebar .nav-group .nav-item{display:flex}
 .stock-dialog label{min-width:0}@media(max-width:600px){.stock-dialog .stock-settings,.stock-dialog .po-line-grid{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Actual receipt corrections stay inside the PO draft. */
+.receipt-history{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.receipt-history h3{font-size:17px;margin:0 0 8px;color:var(--ink)}
+.stock-dialog .receipt-edit-note,.stock-dialog .receipt-empty{font-size:14px;margin:8px 0 14px}
+.po-receipt{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;min-width:0}
+.receipt-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.receipt-heading b{font-size:15px;color:var(--ink)}
+.receipt-heading button{min-height:44px;font-size:14px;white-space:normal}
+.receipt-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr);gap:12px}
+.receipt-fields label{font-size:15px;min-width:0}.receipt-fields input,.receipt-fields select{width:100%}
+@media(max-width:700px){.receipt-fields{grid-template-columns:minmax(0,1fr)}.po-receipt{padding:12px}.receipt-heading{align-items:flex-start}}
