@@ -10,6 +10,7 @@ Features:
 - Raw BigSeller XLSX/CSV uploads with browser preview and authoritative server calculations.
 - Price × Quantity GMV, unique orders, complete-order replacement, duplicate export handling and Bangkok dates.
 - Daily trends, store performance, product insights, marketplace/status filters and your requested store labels.
+- Shopee advertising imports with independent date/store filters, weighted ROAS and daily reporting from one-day exports. See [ADVERTISING-DEPLOYMENT.md](ADVERTISING-DEPLOYMENT.md) for the required backend update.
 - Private source storage, compact monthly report pages and atomic publication.
 - Mobile glass bottom navigation and the attendance site's Euclid Circular A and DB Ozone fonts.
 - Filtered CSV exports and selected-month summarized JSON reports.

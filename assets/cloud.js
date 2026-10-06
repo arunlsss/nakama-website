@@ -87,3 +87,19 @@ export async function upload(files,onProgress){if(pendingImport())throw Error('C
 export const stockForecast=()=>call('nkmStockForecast',{op:'load'});
 export const saveStockForecast=(state,revision)=>call('nkmStockForecast',{op:'save',state,revision});
 export const stockDemand=end=>call('nkmStockDemand',{end:end||null},560000);
+const adsPendingIds=new Map();
+const adsPendingKey=()=>`nakama-ads-import:${config.firebase.projectId}:${auth?.currentUser?.uid||'embedded'}`;
+export function pendingAdsImport(){if(bridge)return bridge.pendingAdsImport();const key=adsPendingKey();try{return sessionStorage.getItem(key)||adsPendingIds.get(key)||null;}catch{return adsPendingIds.get(key)||null;}}
+function rememberAds(id){const key=adsPendingKey();if(id)adsPendingIds.set(key,id);else adsPendingIds.delete(key);try{if(id)sessionStorage.setItem(key,id);else sessionStorage.removeItem(key);}catch{}}
+const advertisingCall=(data,timeout=70000)=>call('nkmProcessImport',{...data,source:'advertising'},timeout);
+export async function advertising(){
+ const rows=[],seen=new Set();let cursor=null,revision,total,updatedAt;
+ do{const page=await advertisingCall({op:'load',cursor,...(revision?{revision}:{})},560000);if(!Array.isArray(page.rows)||!Number.isSafeInteger(page.total)||page.total<0||page.total>50000)throw Error('Invalid advertising report. Refresh to retry.');if(total===undefined){total=page.total;revision=page.revision;updatedAt=page.updatedAt;}else if(total!==page.total||revision!==page.revision)throw Error('Advertising reports changed. Refresh to retry.');rows.push(...page.rows);cursor=page.nextCursor;if(cursor&&seen.has(cursor))throw Error('Invalid advertising pagination.');if(cursor)seen.add(cursor);}while(cursor);
+ if(rows.length!==total)throw Error('Incomplete advertising reports. Refresh to retry.');return {rows,revision,updatedAt};
+}
+export async function retryAdsImport(onProgress=()=>{}){if(bridge)return bridge.retryAdsImport(onProgress);const id=pendingAdsImport();if(!id)throw Error('No pending advertising import.');onProgress('Checking and publishing advertising reports…');try{const result=await advertisingCall({op:'process',id},560000);rememberAds(null);return result;}catch(e){try{const status=await advertisingCall({op:'status',id});if(status.state==='complete'){rememberAds(null);return status;}}catch{}if(['functions/invalid-argument','functions/failed-precondition'].includes(e.code))rememberAds(null);throw e;}}
+export async function uploadAds(files,onProgress=()=>{}){
+ if(bridge)return bridge.uploadAds(files,onProgress);if(pendingAdsImport())throw Error('Retry the pending advertising import before another upload.');const job=await advertisingCall({op:'begin',files:files.map(f=>({name:f.name,size:f.size,lastModified:f.lastModified}))});rememberAds(job.id);
+ try{for(const item of job.files){const file=files[Number(item.index)];await new Promise((resolve,reject)=>{const task=F.uploadBytesResumable(F.ref(storage,item.path),file,{contentType:item.contentType});task.on('state_changed',s=>onProgress(`Uploading advertising file ${Number(item.index)+1}/${job.files.length}: ${Math.round(s.bytesTransferred/s.totalBytes*100)}%`),reject,resolve);});}}catch(e){rememberAds(null);throw Error('Advertising upload interrupted. Select all files again. '+e.message);}
+ return retryAdsImport(onProgress);
+}
