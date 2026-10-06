@@ -4,23 +4,17 @@ Management → Advertising accepts the BigSeller **Marketing → Ads Overview �
 
 ## Deploy before publishing the frontend
 
-The new `nkmAds` callable and the advertising upload Storage rules require a Firebase deployment. From `backend`:
+Advertising uses the existing authenticated `nkmProcessImport` callable with a separate advertising operation. Its backend update and the advertising upload Storage rules require a Firebase deployment. No service IAM or network access setting is changed. From `backend`:
 
 ```sh
 npm ci
 npm ci --prefix functions
-npx firebase deploy --only functions:nakama:nkmAds,storage --project nakama-sales
+npx firebase deploy --only functions:nakama:nkmProcessImport,storage --project nakama-sales
 ```
 
 Keep the existing private Firestore rules. Advertising documents and snapshots are accessed only through the authenticated service. The Storage addition permits an importer to create only their own manifest-matched upload, with a 24-hour expiry. Browser reads, listing, overwrites, and deletions remain denied. Original files are server-validated, and publication checks both membership and the current workspace revision in a transaction.
 
-If this domain-restricted project creates the service but reports **Failed to set invoker**, use the same supported browser transport configuration documented for the existing Nakama services. Find the actual service first:
-
-```sh
-gcloud functions describe nkmAds --gen2 --region asia-southeast1 --project nakama-sales --format='value(serviceConfig.service)'
-```
-
-For that service only, configure browser invocation in Cloud Run according to [Google's public-access guidance](https://docs.cloud.google.com/run/docs/authenticating/public#invoker_check), then retry the scoped deployment. Firebase token verification, enabled membership and importer/admin checks remain mandatory inside `nkmAds`. Do not change organization policy, workspace membership or unrelated services. The existing account browser-access script targets account services only.
+The existing import service's browser transport remains unchanged. Advertising reads still require an enabled member, and imports require an importer/admin role. Order imports without the advertising source flag follow the original handler.
 
 Publish the frontend through the existing GitHub Pages process, refresh Management, and open Advertising. A backend failure leaves reports unavailable instead of presenting invented zeros.
 

@@ -54,3 +54,5 @@ test('later-part and report-write failures leave the published workspace and rep
  const customer=await h.run('nkmCustomerInsights',{from:'2026-09-01',to:'2026-09-30',basis:'completed'});a.equal(customer.totals.orders,records.length);a.equal(customer.totals.units,records.length);}
 });
 
+
+test('advertising uses the existing import transport and checks enabled membership without touching sales',async()=>{const h=await endpointHarness([order(0)]);const before=h.docs.get('workspace/main').revision;const data=await h.run('nkmProcessImport',{source:'advertising',op:'load'});a.equal(data.rows.length,0);a.equal(data.total,0);a.equal(h.docs.get('workspace/main').revision,before);a.equal(h.downloads.length,0);await a.rejects(h.api.nkmProcessImport({auth:null,data:{source:'advertising',op:'load'}}),e=>e.code==='unauthenticated');h.revoke();await a.rejects(h.run('nkmProcessImport',{source:'advertising',op:'load'}),e=>e.code==='permission-denied');});
