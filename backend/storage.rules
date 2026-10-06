@@ -16,15 +16,7 @@ service firebase.storage {
     && request.resource.contentType == job().files[fileIndex].contentType;
    allow read: if false;
   }
-  match /adUploads/{uid}/{importId}/{fileIndex} {
-   function job() { return firestore.get(/databases/(default)/documents/adImports/$(importId)).data; }
-   allow write: if resource == null && request.resource != null && importer(uid)
-    && job().owner == uid && job().state == 'uploading' && request.time < job().expiresAt
-    && fileIndex in job().files && request.resource.size == job().files[fileIndex].size
-    && request.resource.size <= 4 * 1024 * 1024
-    && request.resource.contentType == job().files[fileIndex].contentType;
-   allow read: if false;
-  }
+  // Advertising originals are written only by the authenticated import service.
   match /{path=**} { allow read, write: if false; }
  }
 }

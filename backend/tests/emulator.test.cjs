@@ -7,6 +7,19 @@ async function begin(bytes,name='orders.csv'){return run('nkmBeginImport','impor
 async function rawUpload(job,bytes,ctx,type='text/csv'){return uploadBytes(ref(ctx.storage('gs://demo-nakama.appspot.com'),job.files[0].path),bytes,{contentType:type});}
 before(async()=>{env=await initializeTestEnvironment({projectId:'demo-nakama',firestore:{host:'127.0.0.1',port:8085,rules:fs.readFileSync('firestore.rules','utf8')},storage:{host:'127.0.0.1',port:9199,rules:fs.readFileSync('storage.rules','utf8')}});await env.clearFirestore();for(const [uid,role] of [['importer','importer'],['viewer','viewer'],['other','importer']]){try{await adminAuth.deleteUser(uid);}catch{}await adminAuth.createUser({uid,email:uid+'@example.test'});await adminAuth.setCustomUserClaims(uid,{nakamaRole:role});await db.doc('members/'+uid).set({enabled:true,role});}});
 after(async()=>{await env?.cleanup();});
+test('advertising uploads enforce the manifest and publish through the production handler',{timeout:60000},async()=>{
+ const imp=env.authenticatedContext('importer',{nakamaRole:'importer'}),viewer=env.authenticatedContext('viewer',{nakamaRole:'viewer'}),other=env.authenticatedContext('other',{nakamaRole:'importer'}),anon=env.unauthenticatedContext();
+ const bytes=Buffer.from('Shopee Ads Data,Time:2026-10-05-2026-10-05,Currency:THB\nBigSeller Store Name,Spend,Sales Amount,Direct Sales Amount,Conversion,Direct Conversion,Views,Clicks,Sold Products,Directly Sold Products\nTEST_STORE,100,500,300,10,8,1000,100,15,12\n');
+ const job=await run('nkmProcessImport','importer','importer',{source:'advertising',op:'begin',files:[{name:'ads.csv',size:bytes.length,lastModified:1}]});
+ await assertFails(rawUpload(job,bytes,viewer));await assertFails(rawUpload(job,bytes,other));await assertFails(rawUpload(job,bytes,anon));await assertFails(rawUpload(job,Buffer.from('wrong size'),imp));await assertFails(rawUpload(job,bytes,imp,'application/json'));
+ await assertFails(rawUpload(job,bytes,imp));
+ const args={source:'advertising',op:'upload',id:job.id,index:'0',base64:bytes.toString('base64')};await denies(run('nkmProcessImport','viewer','viewer',args),'permission-denied');await denies(run('nkmProcessImport','other','importer',args),'permission-denied');await denies(run('nkmProcessImport',null,null,args),'unauthenticated');
+ a.equal((await run('nkmProcessImport','importer','importer',args)).state,'uploaded');a.equal((await run('nkmProcessImport','importer','importer',args)).state,'uploaded');await assertFails(rawUpload(job,bytes,imp));
+ const source=ref(imp.storage('gs://demo-nakama.appspot.com'),job.files[0].path);await assertFails(getBytes(source));await assertFails(deleteObject(source));
+ const result=await run('nkmProcessImport','importer','importer',{source:'advertising',op:'process',id:job.id});a.equal(result.state,'complete');
+ const report=await run('nkmProcessImport','viewer','viewer',{source:'advertising',op:'load'});a.equal(report.rows.length,1);a.equal(report.rows[0].spend,100);a.equal(report.rows[0].sales,500);
+ await assertFails(getDoc(doc(viewer.firestore(),'adImports/'+job.id)));await assertFails(getBytes(ref(viewer.storage('gs://demo-nakama.appspot.com'),(await db.doc('adWorkspace/main').get()).data().path)));
+});
 test('real rules + production handlers: source privacy, roles, atomic publication and revocation',{timeout:60000},async()=>{
 const imp=env.authenticatedContext('importer',{nakamaRole:'importer'}),viewer=env.authenticatedContext('viewer',{nakamaRole:'viewer'}),other=env.authenticatedContext('other',{nakamaRole:'importer'}),anon=env.unauthenticatedContext();
 await denies(run('nkmWorkspace',null,null,{}),'unauthenticated');await denies(run('nkmBeginImport','viewer','viewer',{files:[{name:'orders.csv',size:1}]}),'permission-denied');

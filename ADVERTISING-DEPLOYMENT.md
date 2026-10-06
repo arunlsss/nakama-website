@@ -4,7 +4,7 @@ Management → Advertising accepts the BigSeller **Marketing → Ads Overview �
 
 ## Deploy before publishing the frontend
 
-Advertising uses the existing authenticated `nkmProcessImport` callable with a separate advertising operation. Its backend update and the advertising upload Storage rules require a Firebase deployment. No service IAM or network access setting is changed. From `backend`:
+Advertising uses the existing authenticated `nkmProcessImport` callable with a separate advertising operation. Its backend update and server-only advertising upload Storage rules require a Firebase deployment. No service IAM or network access setting is changed. From `backend`:
 
 ```sh
 npm ci
@@ -12,7 +12,7 @@ npm ci --prefix functions
 npx firebase deploy --only functions:nakama:nkmProcessImport,storage --project nakama-sales
 ```
 
-Keep the existing private Firestore rules. Advertising documents and snapshots are accessed only through the authenticated service. The Storage addition permits an importer to create only their own manifest-matched upload, with a 24-hour expiry. Browser reads, listing, overwrites, and deletions remain denied. Original files are server-validated, and publication checks both membership and the current workspace revision in a transaction.
+Keep the existing private Firestore rules. Advertising documents and snapshots are accessed only through the authenticated service. Advertising uploads pass one original file at a time through this callable (base64, at most 4 MiB before encoding). The service checks the enabled importer/admin, job owner, uploading state, 24-hour expiry, manifest slot and exact original size before a create-only Storage write. Identical upload retries succeed; different bytes cannot overwrite an existing file. Direct browser advertising writes, reads, listing and deletions are denied. This avoids browser-to-Storage authorization failures without changing IAM or network access. Original files are server-validated, and publication checks both membership and the current workspace revision in a transaction.
 
 The existing import service's browser transport remains unchanged. Advertising reads still require an enabled member, and imports require an importer/admin role. Order imports without the advertising source flag follow the original handler.
 
