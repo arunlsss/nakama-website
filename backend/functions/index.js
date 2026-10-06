@@ -37,6 +37,9 @@ exports.nkmCustomerInsights=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,con
  const report=Customer.summary(records,args);await member(request);return {...report,revision,months:workspace?.months||[],updatedAt:workspace?.updatedAt?.toMillis?.()||null};
 });
 
+const Advertising=require('./lib/ads-service')({db,bucket,member,C,Timestamp});
+exports.nkmAds=endpoint({timeoutSeconds:540,memory:'1GiB',concurrency:1,maxInstances:2},request=>Advertising.handle(request));
+
 // Stock documents remain private; only enabled members may read or mutate them.
 const Stock=require('./lib/stock-engine');
 exports.nkmStockForecast=endpoint({},async request=>{

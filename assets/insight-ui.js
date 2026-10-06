@@ -26,7 +26,7 @@
     const months = [...(state?.months || [])].sort();
     const definitions = [
       ['Order exports', months.length ? 'Available' : 'No imports', 'Daily order value, orders, units, AOV, stores and order statuses. Product totals support the selected order dates.', months.length > 0],
-      ['Advertising', 'Not connected', 'Ad spend, clicks, impressions, attributed conversions and advertising return require advertising reports or an authorized API connection.', false],
+      ['Advertising', 'Report uploads', 'Open Advertising to import BigSeller Shopee Ads Overview exports for spend, attributed sales, conversions and ROAS. Advertising dates are independent of order reports.', true],
       ['Settlements and costs', 'Not connected', 'Net payout and contribution profit require actual fees, settlement transactions, refunds, shipping charges and product costs.', false],
       ['Store traffic', 'Not connected', 'Visitors, product views and conversion funnels require platform traffic reports. Orders alone cannot establish conversion rates.', false],
       ['Inventory', 'Not connected', 'Available stock and stock coverage require inventory snapshots and an agreed SKU mapping.', false]
@@ -73,7 +73,7 @@
     if (leaders[0] && total.gmv > 0) cards.push(['Watch store concentration', label(leaders[0].store) + ' contributes ' + pct(leaders[0].gmv / total.gmv) + ' of selected order value.', 'Compare order quality and performance across stores before shifting resources.', 'stores']);
     const movers = [...stores].filter(row => row.delta !== null && row.delta !== 0).sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
     if (movers[0]) cards.push(['Largest store value movement', label(movers[0].store) + ': ' + (movers[0].delta > 0 ? '+' : '') + money.format(movers[0].delta) + ' versus the prior period.', 'Review orders and AOV together. An increase does not establish advertising effectiveness or profit.', 'stores']);
-    cards.push(['Complete your profitability picture', 'Ad spend, actual fees, settlements and product costs are not connected.', 'These sources are needed before advertising return or contribution profit can be calculated.', 'sources']);
+    cards.push(['Complete your profitability picture', 'Advertising reports are available in Advertising. Actual fees, settlements and product costs are still needed.', 'Review Shopee spend and ROAS separately; contribution profit also requires settlements and costs.', 'sources']);
     $('action-grid').innerHTML = cards.slice(0, 6).map(([title, evidence, action, target]) => `<article class="action-card"><h3>${esc(title)}</h3><p class="action-evidence">${esc(evidence)}</p><p>${esc(action)}</p><button class="text-button" data-view="${target}">Review ${target === 'sources' ? 'data coverage' : target === 'health' ? 'order health' : target} →</button></article>`).join('');
   }
   function renderProducts({ rows, available, unverified }) {
