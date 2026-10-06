@@ -226,3 +226,16 @@ npm run deploy -- --project nakama-sales
 ```
 
 This extends the existing `nkmCustomerInsights` function with the product calculation. It does not create another function. Before the backend update is deployed, partial-date Product Insight shows an unavailable notice instead of presenting full-month totals as filtered results.
+
+
+## Multiple store selections
+
+Management and Customer Insight use a searchable store picker with checkboxes, Select all, Clear, Cancel and Apply stores. Selections are drafts until Apply, which refreshes the section once. Customer Insight also keeps the Nakama stores shortcut. Selecting specific stores filters sales totals, comparisons, order health, products and exports. Stores missing from a selected reporting period stay selected and produce zero matching sales rather than switching to all stores. Monthly GMV remains independent of the selection.
+
+After pulling this update, deploy from `backend` to enable multiple-store Customer Insight requests:
+
+```bash
+npm run deploy -- --project nakama-sales
+```
+
+Existing single-store and brand/group requests remain supported. No order reimport is required.
