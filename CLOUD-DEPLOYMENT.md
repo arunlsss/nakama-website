@@ -211,3 +211,18 @@ npm run test:emulators
 The emulator command uses `demo-nakama`, stops after three minutes by default, and does not access a real project. Set `NKM_EMULATOR_TIMEOUT_MS` locally only if intentional first-run emulator downloads need more time. Read `VALIDATION.md` for actual checks completed on this package. Emulator tests cannot prove production IAM or replace the live checks above.
 
 Official references: [callable functions](https://firebase.google.com/docs/functions/callable), [Firebase CLI](https://firebase.google.com/docs/cli), [Storage setup](https://firebase.google.com/docs/storage/web/start), [Storage rule conditions](https://firebase.google.com/docs/storage/security/rules-conditions), [Admin SDK setup](https://firebase.google.com/docs/admin/setup).
+
+
+## Separate section dates and exact-date Product Insight
+
+Executive Summary, Overview, Store Performance, Product Insight, Order Health and Data Coverage each remember their own selected dates while the workspace stays open. Customer Insight keeps its own date picker. Navigating to Customer Insight, inventory or purchase orders hides the sales date picker. Monthly GMV continues to cover all imported months independently of section dates.
+
+Product Insight supports single days, partial months and ranges spanning months. The chart, summary, product table and CSV export use the same selected dates and business filters. Partial-month totals are calculated from the existing private order snapshot; only aggregate product totals reach the browser. No reimport is required for existing raw order imports.
+
+After pulling this update in GitHub Desktop, run from `backend`:
+
+```bash
+npm run deploy -- --project nakama-sales
+```
+
+This extends the existing `nkmCustomerInsights` function with the product calculation. It does not create another function. Before the backend update is deployed, partial-date Product Insight shows an unavailable notice instead of presenting full-month totals as filtered results.

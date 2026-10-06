@@ -66,6 +66,17 @@ export const reviewAccount=(uid,action,role)=>call('nkmReviewAccount',{uid,actio
 export const signOut=async()=>{if(bridge)return bridge.signOut();reportPromises.clear();remember(null);await F.signOut(auth);};
 export const workspace=()=>call('nkmWorkspace');
 export const customerInsights=args=>call('nkmCustomerInsights',args,560000);
+export async function productRows(state,range){
+ const rows=[],seen=new Set();let cursor=null,total;
+ do{const p=await call('nkmCustomerInsights',{op:'products',revision:state.revision,...range,cursor},560000);
+  if(p.version===1&&p.kind!=='products')throw Error('Exact-date product totals need the backend update. Ask your administrator to deploy it, then Refresh.');
+  if(p.kind!=='products'||p.revision!==state.revision||p.from!==range.from||p.to!==range.to||!Array.isArray(p.rows)||!Number.isSafeInteger(p.total)||p.total<0)throw Error('Product report changed unexpectedly. Refresh and retry.');
+  if(total===undefined)total=p.total;if(total!==p.total)throw Error('Product report changed unexpectedly. Refresh and retry.');rows.push(...p.rows);cursor=p.nextCursor;
+  if(cursor&&seen.has(cursor))throw Error('Invalid product pagination. Refresh and retry.');if(cursor)seen.add(cursor);
+ }while(cursor);
+ if(rows.length!==total)throw Error('Incomplete product report. Refresh and retry.');return rows;
+}
+
 export const history=async()=>(await call('nkmHistory')).history;
 export async function loadMonth(state,month,options={}){if(bridge)return bridge.loadMonth(state,month,options);if(!state.revision||!state.months.includes(month))throw Error('Choose an available month.');const section=async kind=>{const rows=[];let cursor=null,total;const seen=new Set();do{const p=await call('nkmReportPage',{revision:state.revision,month,kind,cursor});if(p.revision!==state.revision||p.month!==month||p.kind!==kind)throw Error('Report changed unexpectedly. Refresh and retry.');if(total===undefined)total=p.total;rows.push(...p.rows);cursor=p.nextCursor;if(cursor&&seen.has(cursor))throw Error('Invalid report pagination. Refresh and retry.');if(cursor)seen.add(cursor);}while(cursor);if(rows.length!==total)throw Error('Incomplete report. Refresh and retry.');return rows;};const [daily,skus]=await Promise.all([section('daily'),options.dailyOnly?Promise.resolve([]):section('skus')]);return {mode:'raw',records:[],daily,skus,diagnostics:{sourceUnverified:false},revision:state.revision,month};}
 export function pendingImport(){try{return sessionStorage.getItem(key())||pendingId;}catch{return pendingId;}}

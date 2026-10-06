@@ -25,7 +25,7 @@
     if (!allowed) { clear(); return; }
     const months = [...(state?.months || [])].sort();
     const definitions = [
-      ['Order exports', months.length ? 'Available' : 'No imports', 'Daily order value, orders, units, AOV, stores and order statuses. Product totals are monthly.', months.length > 0],
+      ['Order exports', months.length ? 'Available' : 'No imports', 'Daily order value, orders, units, AOV, stores and order statuses. Product totals support the selected order dates.', months.length > 0],
       ['Advertising', 'Not connected', 'Ad spend, clicks, impressions, attributed conversions and advertising return require advertising reports or an authorized API connection.', false],
       ['Settlements and costs', 'Not connected', 'Net payout and contribution profit require actual fees, settlement transactions, refunds, shipping charges and product costs.', false],
       ['Store traffic', 'Not connected', 'Visitors, product views and conversion funnels require platform traffic reports. Orders alone cannot establish conversion rates.', false],
@@ -77,7 +77,7 @@
     $('action-grid').innerHTML = cards.slice(0, 6).map(([title, evidence, action, target]) => `<article class="action-card"><h3>${esc(title)}</h3><p class="action-evidence">${esc(evidence)}</p><p>${esc(action)}</p><button class="text-button" data-view="${target}">Review ${target === 'sources' ? 'data coverage' : target === 'health' ? 'order health' : target} →</button></article>`).join('');
   }
   function renderProducts({ rows, available, unverified }) {
-    if (!available) { $('product-summary').replaceChildren(); $('product-chart').innerHTML = '<p class="chart-empty">Select complete months to rank products.</p>'; return; }
+    if (!available) { $('product-summary').replaceChildren(); $('product-chart').innerHTML = '<p class="chart-empty">Product totals are unavailable. Refresh to retry.</p>'; return; }
     const result = I.products(rows);
     mini($('product-summary'), [
       ['Products / SKUs', number.format(result.count), 'Unique SKU and product-name combinations'],
@@ -89,7 +89,7 @@
     for (const button of document.querySelectorAll('[data-product-metric]')) button.setAttribute('aria-pressed', String(button.dataset.productMetric === productMetric));
     const ranked = [...result.items].sort((a, b) => b[productMetric] - a[productMetric]).slice(0, 8);
     const max = Math.max(...ranked.map(row => row[productMetric]), 1);
-    $('product-chart').innerHTML = ranked.map((row, index) => `<div class="ranked-row" ${NKMCharts.details(row.sku,[["Product",row.product],["Rank",String(index+1)],["Order value",money.format(row.gmv)],["Units",unverified?"Unverified":number.format(row.units)],["SKU orders",number.format(row.orders)],["Value share",pct(row.share)]],"Monthly SKU totals. Orders may contain multiple products; SKU order counts cannot be summed as total orders.")}><div><span><b class="rank">${index + 1}</b>${esc(row.sku)}</span><b>${productMetric === 'gmv' ? money.format(row.gmv) : number.format(row.units) + ' units'}</b></div><p class="product-chart-name">${esc(row.product)}</p><div class="rank-track"><i style="width:${Math.max(0, row[productMetric] / max * 100)}%"></i></div><small>${pct(row.share)} of selected product value · ${unverified ? 'Units unverified' : row.unitValue === null ? 'No unit-value baseline' : money.format(row.unitValue) + ' value per unit'}</small></div>`).join('') || '<p class="chart-empty">No matching products.</p>';
+    $('product-chart').innerHTML = ranked.map((row, index) => `<div class="ranked-row" ${NKMCharts.details(row.sku,[["Product",row.product],["Rank",String(index+1)],["Order value",money.format(row.gmv)],["Units",unverified?"Unverified":number.format(row.units)],["SKU orders",number.format(row.orders)],["Value share",pct(row.share)]],"SKU totals for the selected dates. Orders may contain multiple products; SKU order counts cannot be summed as total orders.")}><div><span><b class="rank">${index + 1}</b>${esc(row.sku)}</span><b>${productMetric === 'gmv' ? money.format(row.gmv) : number.format(row.units) + ' units'}</b></div><p class="product-chart-name">${esc(row.product)}</p><div class="rank-track"><i style="width:${Math.max(0, row[productMetric] / max * 100)}%"></i></div><small>${pct(row.share)} of selected product value · ${unverified ? 'Units unverified' : row.unitValue === null ? 'No unit-value baseline' : money.format(row.unitValue) + ' value per unit'}</small></div>`).join('') || '<p class="chart-empty">No matching products.</p>';
   }
   root.NKMInsightUI = { render, sources, clear, renderProducts, setProductMetric: value => { productMetric = value; } };
 })(typeof self !== 'undefined' ? self : globalThis);
