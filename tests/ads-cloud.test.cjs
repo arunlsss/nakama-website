@@ -10,3 +10,7 @@ test('restricted browser uploads still publish, pending retries remain owner-sco
  a.equal((await h.run("uploadAds([file])")).state,'complete');a.equal(h.run('pendingAdsImport()'),null);a.equal(h.calls.filter(c=>c.data.op==='upload').length,1);
  processFails=true;complete=false;await a.rejects(h.run("uploadAds([file])"));a.equal(h.run('pendingAdsImport()'),'job1');h.auth.currentUser={uid:'other'};a.equal(h.run('pendingAdsImport()'),null);h.auth.currentUser={uid:'owner'};a.equal(h.run('pendingAdsImport()'),'job1');complete=true;a.equal((await h.run('retryAdsImport()')).state,'complete');a.equal(h.run('pendingAdsImport()'),null);
 });
+
+test('TikTok store is included when starting the private advertising job',async()=>{
+ const h=harness(d=>d.op==='begin'?{id:'ttjob',files:[{index:'0'}]}:d.op==='upload'?{state:'uploaded'}:{state:'complete',changes:{added:1}});await h.run('start(()=>{},()=>{})');await h.run("uploadAds([file],()=>{},{tiktokStore:'NKM_TT'})");a.equal(h.calls.find(c=>c.data.op==='begin').data.tiktokStore,'NKM_TT');
+});
