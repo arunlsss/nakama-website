@@ -21,7 +21,7 @@ firebase login --reauth
 firebase deploy --project nakama-sales --only functions:nakama:nkmCustomerInsights
 ```
 
-The dedicated-project predeploy guard must pass. An old backend produces an explicit activation message rather than a fabricated report. Firebase credentials on the development Mac were expired when this release was prepared; no live backend deployment has been verified.
+The dedicated-project predeploy guard must pass. An old backend produces an explicit activation message rather than a fabricated report. Firebase credentials were refreshed and the targeted `nakama:nkmCustomerInsights` deployment completed successfully on 7 October 2026. AI remains disabled until its Secret Manager key and enablement flag are configured.
 
 ## Optional AI connection
 
