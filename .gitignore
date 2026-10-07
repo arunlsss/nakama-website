@@ -15,3 +15,4 @@ backend/functions/.env*
 *service-account*.json
 *credentials*.json
 .firebase/
+backend/private/

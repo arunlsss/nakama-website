@@ -62,6 +62,7 @@ const Advertising=require('./lib/ads-service')({db,bucket,member,C,Timestamp});
 const Stock=require('./lib/stock-engine');
 exports.nkmStockForecast=endpoint({},async request=>{
  const op=request.data?.op||'load';
+ if(op==='product-info')return require('./lib/shipment-reference')({db,member,C}).load(request);
  if(op==='load'){await member(request);const saved=(await db.doc('stockForecast/main').get()).data();await member(request);return {revision:saved?.revision||null,state:saved?.state||Stock.empty(),updatedAt:saved?.updatedAt?.toMillis?.()||null};}
  if(op!=='save')C.fail('invalid-argument','Unknown stock operation.');
  const user=await member(request,['importer','admin']);let state;try{state=Stock.validate(request.data?.state);}catch(e){C.fail('invalid-argument',e.message);}
