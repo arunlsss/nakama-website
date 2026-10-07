@@ -1,0 +1,29 @@
+/* Shared field rhythm for standalone and embedded management screens. */
+:root{--field-height:48px;--field-radius:12px;--field-gap:8px}
+.filters,.customer-filter-grid,.stock-filters,.stock-settings,.stock-rate-actions,.po-line-grid{align-items:end}
+.filters label,.customer-filter-grid label,.stock-filters label,.stock-settings label,.stock-rate-actions label,.po-line-grid label,.date-range-label,.filter-label{font-size:14px;font-weight:500;line-height:24px;color:var(--muted)}
+.filters select,.customer-filter-grid select,.customer-filter-grid input,.stock-filters select,.stock-filters input,.stock-settings input,.stock-settings select,.stock-rate-actions input,.stock-rate-actions select,.po-line-grid input,.po-line-grid select,.store-picker-trigger,.date-range-trigger{min-height:var(--field-height);border:1px solid var(--line);border-radius:var(--field-radius);background:var(--surface);color:var(--ink);padding:11px 16px;font-size:16px;line-height:24px;box-sizing:border-box;min-width:0;width:100%;max-width:100%}
+.filters label,.customer-filter-grid label{gap:var(--field-gap)}
+.store-picker-trigger b{font-size:16px;line-height:24px;font-weight:500}
+.store-picker-trigger small{display:none}
+.store-picker-trigger>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.store-picker-trigger b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.date-range-trigger b{min-width:0;overflow-wrap:anywhere}
+.filters .reset,.customer-filter-grid #apply,.stock-rate-actions button{min-height:var(--field-height)}
+.ads-filters{display:grid;grid-template-columns:minmax(150px,180px) minmax(0,1fr) minmax(180px,240px);gap:18px;align-items:start}
+.ads-filters>*{min-width:0;margin:0}
+.ads-platform,.ads-store-field{display:grid;gap:var(--field-gap);font-size:14px;line-height:24px;font-weight:500;color:var(--muted)}
+.ads-filters .date-range-control{margin:0;max-width:none;min-width:0;gap:var(--field-gap)}
+.ads-platform select,.ads-stores summary{min-height:var(--field-height);padding:11px 16px;font-size:16px;font-weight:500;line-height:24px;border:1px solid var(--line);border-radius:var(--field-radius);color:var(--ink);background:var(--surface);width:100%;box-sizing:border-box}
+.ads-stores{min-width:0;margin:0}
+.ads-stores summary{display:flex;align-items:center;gap:10px;list-style:none;cursor:pointer;overflow-wrap:anywhere}
+.ads-stores summary::-webkit-details-marker{display:none}
+.ads-stores summary::after{content:'⌄';margin-left:auto;flex:none;color:var(--muted);font-size:22px}
+.ads-stores[open] summary::after{transform:rotate(180deg)}
+.ads-store-options{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:var(--field-radius);background:var(--surface);margin-top:8px}
+.ads-store-options label{min-height:44px;font-size:14px;color:var(--ink);line-height:1.5}
+.ads-store-options input[type=checkbox]{min-height:18px;flex:none;margin:0;padding:0;accent-color:var(--red)}
+.ads-stores summary:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+@media(max-width:700px){.ads-filters{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}.ads-store-field{grid-column:1/-1}}
+@media(max-width:600px){.ads-filters{grid-template-columns:minmax(0,1fr)}.ads-store-field{grid-column:auto}.filters label,.customer-filter-grid label{min-width:0}.customer-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.customer-filter-grid #apply{align-self:end}.stock-filters input,.stock-filters select{max-width:100%}}
+@media(max-width:380px){.customer-filter-grid{grid-template-columns:minmax(0,1fr)}}

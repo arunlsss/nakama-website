@@ -1448,6 +1448,10 @@ body[data-page="find-wiper"] .wiper-result-card  { padding: 16px; }
 }
 
 /* Readable public-site typography. Thai glyphs use DB; Latin uses Euclid. */
+.wiper-field-row{align-items:end}
+.wiper-field label{font-size:14px;line-height:24px;letter-spacing:normal;margin-bottom:8px}
+.wiper-field select,.wiper-dd-input{min-height:48px;min-width:0;border-radius:12px;font-size:16px;line-height:24px;box-sizing:border-box}
+.wiper-dd-input:focus-visible,.wiper-field select:focus-visible{outline:3px solid var(--red);outline-offset:3px}
 h1,h2,h3{line-height:1.25;letter-spacing:.015em}
 .navbar-links a,.navbar-mobile-menu a{font-size:1rem}
 .section-label,.hero-eyebrow,.footer-heading,.av-contact-group-lbl{font-size:.875rem}
