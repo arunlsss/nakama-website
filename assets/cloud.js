@@ -65,6 +65,8 @@ export const accounts=cursor=>call('nkmAccounts',{cursor:cursor||null});
 export const reviewAccount=(uid,action,role)=>call('nkmReviewAccount',{uid,action,role});
 export const signOut=async()=>{if(bridge)return bridge.signOut();reportPromises.clear();remember(null);await F.signOut(auth);};
 export const workspace=()=>call('nkmWorkspace');
+export const bundleInsights=args=>call('nkmCustomerInsights',{...args,op:'bundles'},560000);
+export const bundleIdeas=args=>call('nkmCustomerInsights',{...args,op:'bundle-ai'},560000);
 export const customerInsights=args=>call('nkmCustomerInsights',args,560000);
 export async function productRows(state,range){
  const rows=[],seen=new Set();let cursor=null,total;

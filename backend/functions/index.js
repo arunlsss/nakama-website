@@ -30,10 +30,28 @@ exports.nkmProcessImport=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concur
 exports.nkmReportPage=endpoint({},async request=>{await member(request);const args=C.pageArgs(request.data),[r,m]=await Promise.all([revisionRef(args.revision).get(),monthRef(args.revision,args.month).get()]);if(r.data()?.state!=='published'||!m.exists)C.fail('not-found','Published month unavailable.');const meta=m.data(),count=args.kind==='daily'?meta.dailyChunks:meta.skuChunks;return {revision:args.revision,month:args.month,kind:args.kind,total:args.kind==='daily'?meta.dailyRows:meta.skuRows,...await C.page(async n=>(await chunkRef(args.revision,args.month,args.kind,n).get()).data()?.rows,count,args)};});
 exports.nkmHistory=endpoint({},async request=>{await member(request);const s=await db.collection('reports').orderBy('publishedAt','desc').limit(30).get();return {history:s.docs.map(s=>{const d=s.data();return {revision:s.id,time:d.publishedAt.toMillis(),label:'Cloud orders imported',files:d.files,orders:d.orders};})};});
 // Cache one immutable product report per warm instance; membership is checked on every page.
-let productReportCache=null;
+let productReportCache=null,bundleReportCache=null;
+const bundleAIEnabled=process.env.NKM_BUNDLE_AI_ENABLED==='true';
 // Customer hashes remain in the private canonical snapshot. Only aggregate findings leave this endpoint.
-exports.nkmCustomerInsights=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concurrency:1,maxInstances:2},async request=>{
- await member(request);if(request.data?.op==='products'){const P=require('./lib/products'),args=P.validate(request.data),published=(await revisionRef(args.revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('not-found','Published orders unavailable.');if(!productReportCache||productReportCache.revision!==args.revision||productReportCache.from!==args.from||productReportCache.to!==args.to){const rows=P.rows(await readOrders(published.snapshot),args);productReportCache={revision:args.revision,from:args.from,to:args.to,total:rows.length,chunks:C.packRows(rows)};}const cached=productReportCache,page=await C.page(async n=>cached.chunks[n],cached.chunks.length,args);await member(request);return {kind:'products',revision:args.revision,from:args.from,to:args.to,total:cached.total,...page};}let args;try{args=Customer.validate(request.data);}catch(e){C.fail('invalid-argument',e.message);}const workspace=(await db.doc('workspace/main').get()).data(),revision=workspace?.revision||null;
+exports.nkmCustomerInsights=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concurrency:1,maxInstances:2,...(bundleAIEnabled?{secrets:['NKM_BUNDLE_OPENAI_API_KEY']}:{})},async request=>{
+ await member(request);
+ if(['bundles','bundle-ai'].includes(request.data?.op)){
+  const B=require('./lib/bundles');let args;try{args=B.validate(request.data);}catch(e){C.fail('invalid-argument',e.message);}
+  const workspace=(await db.doc('workspace/main').get()).data(),revision=workspace?.revision||null,cacheKey=JSON.stringify([revision,args]);
+  if(!bundleReportCache||bundleReportCache.key!==cacheKey){let records=[];if(revision){const published=(await revisionRef(revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('data-loss','Published orders unavailable.');records=await readOrders(published.snapshot);}bundleReportCache={key:cacheKey,report:B.summary(records,args)};}
+  const report={...bundleReportCache.report,revision,months:workspace?.months||[],updatedAt:workspace?.updatedAt?.toMillis?.()||null,ai:{status:bundleAIEnabled?'available':'unavailable'}};
+  if(request.data.op==='bundle-ai'){
+   await member(request,['admin','importer']);
+   if(bundleAIEnabled){
+    // Bound paid generations across users and instances. A failed attempt also consumes its slot.
+    const now=Date.now(),ref=db.doc('internal/bundleAIRate');await db.runTransaction(async tx=>{const saved=(await tx.get(ref)).data()||{},recent=saved.windowStart>now-3600000,attempts=recent?(saved.attempts||0)+1:1;if(attempts>10||saved.lastAttempt>now-60000)C.fail('resource-exhausted','AI suggestions are limited to one request per minute and ten per hour. Try again later.');tx.set(ref,{windowStart:recent?saved.windowStart:now,attempts,lastAttempt:now});});
+    await member(request,['admin','importer']);
+    try{report.ai=await require('./lib/bundle-ai').generate(report,{apiKey:process.env.NKM_BUNDLE_OPENAI_API_KEY,model:process.env.NKM_BUNDLE_OPENAI_MODEL||'gpt-4o-mini'});}catch{C.fail('unavailable','AI suggestions are temporarily unavailable. Your purchase-pattern results are unchanged. Try again later.');}
+   }
+  }
+  await member(request);return report;
+ }
+ if(request.data?.op==='products'){const P=require('./lib/products'),args=P.validate(request.data),published=(await revisionRef(args.revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('not-found','Published orders unavailable.');if(!productReportCache||productReportCache.revision!==args.revision||productReportCache.from!==args.from||productReportCache.to!==args.to){const rows=P.rows(await readOrders(published.snapshot),args);productReportCache={revision:args.revision,from:args.from,to:args.to,total:rows.length,chunks:C.packRows(rows)};}const cached=productReportCache,page=await C.page(async n=>cached.chunks[n],cached.chunks.length,args);await member(request);return {kind:'products',revision:args.revision,from:args.from,to:args.to,total:cached.total,...page};}let args;try{args=Customer.validate(request.data);}catch(e){C.fail('invalid-argument',e.message);}const workspace=(await db.doc('workspace/main').get()).data(),revision=workspace?.revision||null;
  let records=[];if(revision){const published=(await revisionRef(revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('data-loss','Published orders unavailable.');records=await readOrders(published.snapshot);}
  const report=Customer.summary(records,args);await member(request);return {...report,revision,months:workspace?.months||[],updatedAt:workspace?.updatedAt?.toMillis?.()||null};
 });
