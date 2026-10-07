@@ -10,6 +10,7 @@ CNAME.original
 *.before-management
 qa-mobile.html
 *.log
+backend/functions/.env*
 
 *service-account*.json
 *credentials*.json
