@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node dev-server.cjs",
-    "test": "node tests/engine.test.cjs && node backend/tests/core.test.cjs && node --test tests/ads.test.cjs tests/ads-ui.test.cjs tests/ads-cloud.test.cjs backend/tests/canonical-storage.test.cjs backend/tests/customer.test.cjs backend/tests/products.test.cjs backend/tests/monthly-gmv.test.cjs tests/customer-ui.test.cjs tests/date-range.test.cjs tests/stock.test.cjs tests/stock-api.test.cjs tests/stock-ui.test.cjs tests/cloud-watch.test.cjs backend/tests/ui.test.cjs"
+    "test": "node tests/engine.test.cjs && node backend/tests/core.test.cjs && node --test tests/ads.test.cjs tests/ads-ui.test.cjs tests/ads-cloud.test.cjs backend/tests/canonical-storage.test.cjs backend/tests/customer.test.cjs backend/tests/products.test.cjs backend/tests/monthly-gmv.test.cjs tests/customer-ui.test.cjs tests/date-range.test.cjs tests/stock.test.cjs tests/stock-api.test.cjs tests/stock-ui.test.cjs tests/cloud-watch.test.cjs backend/tests/ui.test.cjs && node --test tests/navigation.test.cjs tests/clean-urls.test.cjs",
+    "build:urls": "node scripts/build-clean-urls.cjs"
   }
 }

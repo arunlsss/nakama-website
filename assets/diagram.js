@@ -21,14 +21,14 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'wiper-standard',
-        image:      'assets/images/merchant/wiper/main_wiper/ปก.png',
+        image:      '/assets/images/merchant/wiper/main_wiper/ปก.png',
         emoji:      '🌧️',
         name:       'ใบปัดน้ำฝนคู่หน้า Standard',
         desc:       'รองรับ Toyota, Honda, Mazda, Isuzu และอีกกว่า 50 รุ่น'
       },
       {
         product_id: 'glass-restore',
-        image:      'assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
         emoji:      '🪟',
         name:       'Glass Restore',
         desc:       'ขจัดคราบน้ำ คราบหินปูน ฟื้นฟูกระจกให้ใสเหมือนใหม่'
@@ -42,7 +42,7 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'headlight-restoration',
-        image:      'assets/images/merchant/spray/13.HeadlightRestoration/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/13.HeadlightRestoration/เดี่ยว ปก.png',
         emoji:      '💡',
         name:       'Headlight Restoration',
         desc:       'ขัดฟื้นฟูไฟหน้าเหลือง หมอง ขุ่น เคลือบ UV ป้องกันระยะยาว'
@@ -56,28 +56,28 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-engine-degreaser',
-        image:      'assets/images/merchant/spray/04.EngineDegreaser/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/04.EngineDegreaser/2026/เดี่ยว ปก.png',
         emoji:      '🔧',
         name:       'Engine Degreaser',
         desc:       'สเปรย์ล้างคราบน้ำมัน คราบไขมันในห้องเครื่องยนต์'
       },
       {
         product_id: 'spray-carb-cleaner',
-        image:      'assets/images/merchant/spray/05.CarbCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/05.CarbCleaner/2026/เดี่ยว ปก.png',
         emoji:      '⚙️',
         name:       'Carb Cleaner',
         desc:       'ล้างคาร์บูเรเตอร์ ลดการอุดตัน เครื่องสตาร์ทง่ายขึ้น'
       },
       {
         product_id: 'spray-contact-cleaner',
-        image:      'assets/images/merchant/spray/01.ContactCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/01.ContactCleaner/2026/เดี่ยว ปก.png',
         emoji:      '🔌',
         name:       'Contact Cleaner',
         desc:       'ล้างแผงวงจร ECU กล่องฟิวส์ ขั้วต่อไฟฟ้า'
       },
       {
         product_id: 'spray-derust',
-        image:      'assets/images/merchant/spray/06.DerustLubricating/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/06.DerustLubricating/2026/เดี่ยว ปก.png',
         emoji:      '🛢️',
         name:       'De-rust & Lubricating',
         desc:       'หล่อลื่น กำจัดสนิม ไล่ความชื้น คลายสกรูแน่น'
@@ -91,21 +91,21 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-tire-shine',
-        image:      'assets/images/merchant/spray/09.TireShine/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/09.TireShine/2026/เดี่ยว ปก.png',
         emoji:      '⚫',
         name:       'Tire Shine',
         desc:       'เคลือบยางดำเงาเหมือนใหม่ ป้องกัน UV และความร้อน'
       },
       {
         product_id: 'spray-tire-sealer',
-        image:      'assets/images/merchant/spray/08.TireSealer/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/08.TireSealer/2026/เดี่ยว ปก.png',
         emoji:      '🚨',
         name:       'Tire Sealer',
         desc:       'ปะยาง + เติมลมภายใน 1 นาที ไม่ต้องถอดล้อ'
       },
       {
         product_id: 'spray-brake-cleaner',
-        image:      'assets/images/merchant/spray/03.BrakeCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/03.BrakeCleaner/2026/เดี่ยว ปก.png',
         emoji:      '🛑',
         name:       'Brake Cleaner',
         desc:       'ล้างจานเบรค ผ้าเบรค คาลิปเปอร์ แห้งเร็ว'
@@ -119,21 +119,21 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'scratch-remover',
-        image:      'assets/images/merchant/spray/14.ScratchRemover/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/14.ScratchRemover/เดี่ยว ปก.png',
         emoji:      '✨',
         name:       'Scratch Remover',
         desc:       'ลบรอยขีดข่วน รอยเบียด รอยขนแมว'
       },
       {
         product_id: 'spray-pitch-spot',
-        image:      'assets/images/merchant/spray/07.PitchSpot/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/07.PitchSpot/2026/เดี่ยว ปก.png',
         emoji:      '🛤️',
         name:       'Pitch & Spot',
         desc:       'ลบคราบยางมะตอย คราบแมลง คราบดินโคลน'
       },
       {
         product_id: 'spray-sticker-remover',
-        image:      'assets/images/merchant/spray/02.StickerRemover/ปกไม่เตือน.png',
+        image:      '/assets/images/merchant/spray/02.StickerRemover/ปกไม่เตือน.png',
         emoji:      '🏷️',
         name:       'Sticker Remover',
         desc:       'ลบคราบสติกเกอร์และกาวเหนียวภายใน 10-15 วินาที'
@@ -147,7 +147,7 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-plastic-restore',
-        image:      'assets/images/merchant/spray/10.PlasticRestore/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/10.PlasticRestore/2026/เดี่ยว ปก.png',
         emoji:      '🔲',
         name:       'Plastic Restore',
         desc:       'ฟื้นฟูพลาสติกซีดจาง กันชน คิ้วประตู คอนโซล ป้องกัน UV'
@@ -161,14 +161,14 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'wiper-rear',
-        image:      'assets/images/merchant/wiper/rear_wiper/ปก.png',
+        image:      '/assets/images/merchant/wiper/rear_wiper/ปก.png',
         emoji:      '🌧️',
         name:       'ใบปัดน้ำฝนหลัง',
         desc:       'ขนาดตามรุ่นรถ รองรับหลายยี่ห้อ'
       },
       {
         product_id: 'glass-restore',
-        image:      'assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
         emoji:      '🪟',
         name:       'Glass Restore',
         desc:       'ขจัดคราบฝังแน่นบนกระจกหลัง'
@@ -183,7 +183,7 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'glass-restore',
-        image:      'assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/12.GlassRestore/เดี่ยว ปก.png',
         emoji:      '🪟',
         name:       'Glass Restore',
         desc:       'ขจัดคราบน้ำ คราบหินปูน ฟื้นฟูกระจกหน้ามอเตอร์ไซค์'
@@ -197,7 +197,7 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'headlight-restoration',
-        image:      'assets/images/merchant/spray/13.HeadlightRestoration/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/13.HeadlightRestoration/เดี่ยว ปก.png',
         emoji:      '💡',
         name:       'Headlight Restoration',
         desc:       'ขัดฟื้นฟูไฟหน้าเหลือง หมอง เคลือบ UV'
@@ -211,28 +211,28 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-engine-degreaser',
-        image:      'assets/images/merchant/spray/04.EngineDegreaser/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/04.EngineDegreaser/2026/เดี่ยว ปก.png',
         emoji:      '🔧',
         name:       'Engine Degreaser',
         desc:       'ล้างคราบน้ำมัน คราบไขมันบนเครื่องยนต์และชิ้นส่วน'
       },
       {
         product_id: 'spray-carb-cleaner',
-        image:      'assets/images/merchant/spray/05.CarbCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/05.CarbCleaner/2026/เดี่ยว ปก.png',
         emoji:      '⚙️',
         name:       'Carb Cleaner',
         desc:       'ล้างคาร์บูเรเตอร์ ลดการอุดตัน เหมาะมากกับมอเตอร์ไซค์'
       },
       {
         product_id: 'spray-contact-cleaner',
-        image:      'assets/images/merchant/spray/01.ContactCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/01.ContactCleaner/2026/เดี่ยว ปก.png',
         emoji:      '🔌',
         name:       'Contact Cleaner',
         desc:       'ล้างขั้วต่อไฟฟ้า เซนเซอร์ วงจรควบคุม'
       },
       {
         product_id: 'spray-derust',
-        image:      'assets/images/merchant/spray/06.DerustLubricating/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/06.DerustLubricating/2026/เดี่ยว ปก.png',
         emoji:      '🛢️',
         name:       'De-rust & Lubricating',
         desc:       'หล่อลื่นโซ่ เฟือง สกรู ไล่สนิม'
@@ -246,21 +246,21 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-tire-shine',
-        image:      'assets/images/merchant/spray/09.TireShine/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/09.TireShine/2026/เดี่ยว ปก.png',
         emoji:      '⚫',
         name:       'Tire Shine',
         desc:       'เคลือบยางมอเตอร์ไซค์ให้ดำเงา ป้องกัน UV'
       },
       {
         product_id: 'spray-tire-sealer',
-        image:      'assets/images/merchant/spray/08.TireSealer/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/08.TireSealer/2026/เดี่ยว ปก.png',
         emoji:      '🚨',
         name:       'Tire Sealer — ปะยางฉุกเฉิน',
         desc:       'ปะยางรั่วมอเตอร์ไซค์ได้ทันที'
       },
       {
         product_id: 'spray-brake-cleaner',
-        image:      'assets/images/merchant/spray/03.BrakeCleaner/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/03.BrakeCleaner/2026/เดี่ยว ปก.png',
         emoji:      '🛑',
         name:       'Brake Cleaner',
         desc:       'ล้างจานเบรค ดิสก์ คาลิปเปอร์ของมอเตอร์ไซค์'
@@ -274,21 +274,21 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'scratch-remover',
-        image:      'assets/images/merchant/spray/14.ScratchRemover/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/14.ScratchRemover/เดี่ยว ปก.png',
         emoji:      '✨',
         name:       'Scratch Remover',
         desc:       'ลบรอยขีดข่วนบนฝาครอบและตัวถัง'
       },
       {
         product_id: 'spray-sticker-remover',
-        image:      'assets/images/merchant/spray/02.StickerRemover/ปกไม่เตือน.png',
+        image:      '/assets/images/merchant/spray/02.StickerRemover/ปกไม่เตือน.png',
         emoji:      '🏷️',
         name:       'Sticker Remover',
         desc:       'ลบสติกเกอร์ คราบกาว ออกจากตัวถัง'
       },
       {
         product_id: 'spray-plastic-restore',
-        image:      'assets/images/merchant/spray/10.PlasticRestore/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/10.PlasticRestore/2026/เดี่ยว ปก.png',
         emoji:      '🔲',
         name:       'Plastic Restore',
         desc:       'ฟื้นฟูฝาครอบพลาสติกที่ซีดจางจากแดด'
@@ -302,7 +302,7 @@ var DIAGRAM_PRODUCTS = {
     items: [
       {
         product_id: 'spray-helmet-foam',
-        image:      'assets/images/merchant/spray/11.HelmetFoam/2026/เดี่ยว ปก.png',
+        image:      '/assets/images/merchant/spray/11.HelmetFoam/2026/เดี่ยว ปก.png',
         emoji:      '⛑️',
         name:       'Helmet Foam',
         desc:       'สเปรย์ล้างหมวกกันน็อค ขจัดคราบมัน แบคทีเรีย กลิ่นหอมสดชื่น'
@@ -384,7 +384,7 @@ function diagramSetMode(mode) {
   document.getElementById('diagramBtnMoto').classList.toggle('active', mode === 'moto');
 
   if (mode === 'car') {
-    mainImg.src = 'assets/images/diagram/GR86.png';
+    mainImg.src = '/assets/images/diagram/GR86.png';
     mainImg.alt = 'รถยนต์ NAKAMA 5666';
     mainImg.className = 'diagram-main-img mode-car-img';
     container.className = 'diagram-vehicle-container mode-car';
@@ -393,7 +393,7 @@ function diagramSetMode(mode) {
     document.getElementById('diagramZonesCar').style.display  = 'flex';
     document.getElementById('diagramZonesMoto').style.display = 'none';
   } else {
-    mainImg.src = 'assets/images/diagram/S1000RR.png';
+    mainImg.src = '/assets/images/diagram/S1000RR.png';
     mainImg.alt = 'มอเตอร์ไซค์ NAKAMA 5666';
     mainImg.className = 'diagram-main-img mode-moto-img';
     container.className = 'diagram-vehicle-container mode-moto';
@@ -467,12 +467,12 @@ function buildDiagramHTML(mode) {
       <div class="diagram-vehicle-container mode-car" id="diagramVehicleContainer">
 
         <img class="diagram-main-img mode-car-img" id="diagramMainImg"
-             src="assets/images/diagram/GR86.png"
+             src="/assets/images/diagram/GR86.png"
              alt="รถยนต์ NAKAMA 5666" draggable="false"/>
 
         <!-- Helmet overlay (moto only) -->
         <div id="diagramHelmetOverlay" style="display:none; position:absolute; left:85%; top:18%; width:22%; aspect-ratio:1; z-index:15; transform:translate(-50%,-50%);">
-          <img src="assets/images/diagram/HELMET.png"
+          <img src="/assets/images/diagram/HELMET.png"
                alt="หมวกกันน็อค" draggable="false"
                style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(213,20,40,0.45))"/>
         </div>
@@ -529,7 +529,7 @@ function buildDiagramHTML(mode) {
   <circle cx="11" cy="11" r="8"/>
   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
 </svg> สำรวจสินค้าทุกจุดของรถ</p>
-          <a href="products.html" class="btn btn-primary">เปิด Diagram เต็มรูปแบบ →</a>
+          <a href="/products/" class="btn btn-primary">เปิด Diagram เต็มรูปแบบ →</a>
         </div>
       </div>` : ''}
 

@@ -27,7 +27,7 @@ function initWiperFinder() {
   var mHidden   = document.getElementById('wiperModelValue');
 
   /* ── Load data ── */
-  fetch('assets/data/wiper-data.json')
+  fetch('/assets/data/wiper-data.json')
     .then(function(r) { return r.json(); })
     .then(function(json) {
       DB = json.wipers;
@@ -244,12 +244,12 @@ function initWiperFinder() {
         <div class="wiper-result-cta-btns">
           <a href="${r.shopee_url || '#'}" target="_blank" rel="noopener"
              class="product-modal-variant-btn product-modal-variant-btn--shopee">
-            <img src="assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
+            <img src="/assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
             ซื้อบน Shopee
           </a>
           <a href="${r.tiktok_url || '#'}" target="_blank" rel="noopener"
              class="product-modal-variant-btn product-modal-variant-btn--tiktok">
-            <img src="assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
+            <img src="/assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
             ซื้อบน TikTok Shop
           </a>
         </div>
