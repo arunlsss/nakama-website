@@ -5,6 +5,7 @@ function validate(products){
   const sku=String(product.sku??'').trim();if(!sku||sku.length>160)throw Error('Missing or invalid Product Info SKU: '+sku);
   const output={sku,type:String(product.type??'').slice(0,160),model:String(product.model??'').slice(0,200)};
   for(const field of ['width','length','height','cbm','unitsPerBox']){const value=product[field]===0?null:product[field]??null;if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)||value<=0))throw Error('Invalid '+field+' for '+sku);output[field]=value;}
+  for(const field of ['seaRate','truckRate']){const value=product[field]??null;if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)||value<0))throw Error('Invalid '+field+' for '+sku);output[field]=value;}
   return output;
  });
 }

@@ -12,3 +12,17 @@ test('units convert dimensions before comparison and kg basis never caps the wei
 test('blank/zero Product Info carton placeholders remain missing and product Dimension is ignored',()=>{const p=E.catalog([['Parent SKU','Dimension','W','D','H','CBM'],['TEST','1x1x1',0,40,49,0]]);a.equal(p[0].width,null);a.equal(p[0].cbm,null);a.equal(E.compare(row(),p).checked,false);});
 test('partial totals exclude unchecked rows and charge-less rows, and CSV preserves both dimensions safely',()=>{const checked=E.compare(row(),[product]),unknown=E.compare({...row(),sku:'=DANGER'},[product]);const t=E.totals([checked,unknown]);a.equal(t.checked,1);a.equal(t.chargeRows,1);a.equal(t.cbm,.04488);a.equal(t.correctedAmount,237.86);const csv=E.csv([checked,unknown]);a.match(csv,/Uploaded W cm/);a.match(csv,/Chosen W cm/);a.match(csv,/"'=DANGER"/);a.match(csv,/SKU not found/);});
 test('worker reads an XLSX through the actual vendor parser and returns the same validated table',()=>{const X=require('../assets/vendor/xlsx.full.min.js'),book=X.utils.book_new();X.utils.book_append_sheet(book,X.utils.aoa_to_sheet(data()),'Invoice');const buffer=X.write(book,{type:'buffer',bookType:'xlsx'});let response;const ctx=vm.createContext({XLSX:X,NKMShipment:E,importScripts:()=>{},self:{postMessage:r=>{response=r;}}});vm.runInContext(fs.readFileSync(path.join(__dirname,'../assets/shipment-import-worker.js'),'utf8'),ctx);ctx.self.onmessage({data:{buffer,kind:'shipment',unit:'cm'}});a.equal(response.error,undefined);a.equal(response.result.rows.length,50);});
+test('Sea and Truck use their SKU reference rates instead of the invoice rate; volume is unchanged',()=>{
+ const p={...product,seaRate:2000,truckRate:4000},sea=E.compare(row(),[p],{freight:'sea'}),truck=E.compare(row(),[p],{freight:'truck'});
+ a.equal(sea.correctedAmount,89.76);a.equal(truck.correctedAmount,179.52);a.equal(sea.used.cbm,truck.used.cbm);a.equal(truck.usedRate,4000);a.equal(truck.referenceRate,4000);a.match(truck.rateSource,/Truck/);a.ok(truck.issues.includes('Uploaded rate differs from Truck freight reference'));
+ const csv=E.csv([truck]);a.match(csv,/Freight method/);a.match(csv,/"truck","cbm","4000","4000","Product Info Truck"/);
+});
+test('missing and invalid selected freight rates never fall back to the uploaded rate; explicit zero stays zero',()=>{
+ for(const rate of [null,undefined,-1,'4000']){const r=E.compare(row(),[{...product,seaRate:rate,truckRate:4000}],{freight:'sea'});a.equal(r.correctedAmount,null);a.equal(r.usedRate,null);a.equal(E.totals([r]).chargeRows,0);a.ok(r.issues.includes('Missing or invalid Sea freight rate in Product Info'));}
+ const zero=E.compare(row(),[{...product,seaRate:0}],{freight:'sea'});a.equal(zero.correctedAmount,0);a.equal(zero.usedRate,0);
+ const noInvoiceRate=E.compare({...row(),rate:null},[{...product,seaRate:2000}],{freight:'sea'});a.equal(noInvoiceRate.correctedAmount,89.76);a.equal(noInvoiceRate.expectedOriginal,null);
+});
+test('Product Info imports freight headers with line breaks and ignores derived per-unit charges',()=>{
+ const products=E.catalog([['Parent SKU','W','D','H','CBM','SEA Freight\n(THB/m3)','SEA Freight (per unit)','Truck Freight\n(THB/m3)','Truck Freight (per unit)'],['TEST',33,40,49,.065,2000,1.3,4000,2.6]]);
+ a.equal(products[0].seaRate,2000);a.equal(products[0].truckRate,4000);a.equal(E.compare(row(),products,{freight:'truck'}).correctedAmount,179.52);
+});
