@@ -2,6 +2,14 @@
 'use strict';
 const text=v=>String(v??'').trim(),key=v=>text(v).toLowerCase().replace(/\s+/g,' '),number=v=>{if(v===null||v===undefined||text(v)==='')return null;const n=Number(typeof v==='string'?v.replace(/,/g,'').trim():v);return Number.isFinite(n)?n:null;},positive=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
 const volume=box=>[box.width,box.length,box.height].every(positive)?box.width*box.length*box.height/1e6:null;
+function roundedVolume(box){
+ if(volume(box)===null||!Number.isFinite(volume(box)))return null;
+ // Decimal arithmetic keeps an exact thousandth from rounding up again due to floating-point noise.
+ const parts=[box.width,box.length,box.height].map(value=>{const [mantissa,exponent='0']=String(value).toLowerCase().split('e'),[whole,fraction='']=mantissa.split('.');return {coefficient:BigInt(whole+fraction),scale:fraction.length-Number(exponent)};});
+ const scale=parts.reduce((n,p)=>n+p.scale,0)+3,coefficient=parts.reduce((n,p)=>n*p.coefficient,1n),numerator=scale<0?coefficient*10n**BigInt(-scale):coefficient,denominator=scale<0?1n:10n**BigInt(scale);
+ const result=Number((numerator+denominator-1n)/denominator)/1000;
+ return Number.isFinite(result)?result:null;
+}
 const money=v=>Math.round((v+Number.EPSILON)*100)/100;
 const columns={tracking:['รายการ','tracking','tracking no','tracking number'],extension:['extension','carton','carton no'],qty:['จำนวนกล่อง','cartons','boxes'],width:['กว้าง','width','w'],length:['ยาว','length','depth','d','l'],height:['สูง','height','h'],cbm:['cbm'],rate:['ราคาต่อหน่วย','rate','unit rate'],amount:['จำนวนเงิน','amount'],sku:['sku','parent sku'],kg:['kg','weight (kg)']};
 function parse(rows,{sheet='Shipment',unit='cm'}={}){
@@ -26,7 +34,7 @@ function parse(rows,{sheet='Shipment',unit='cm'}={}){
   if(!positive(row.cbm))row.issues.push(row.cbm===null?'Missing uploaded CBM':'Invalid uploaded CBM');
   if(row.rate===null||row.rate<0)row.issues.push('Invalid unit rate');
   if(row.amount===null||row.amount<0)row.issues.push('Invalid amount');
-  const computed=volume(row);if(computed!==null&&positive(row.cbm)&&Math.abs(computed-row.cbm)>0.00050001)row.issues.push('CBM differs from dimensions');
+  const computed=roundedVolume(row);if(computed!==null&&positive(row.cbm)&&Math.abs(computed-row.cbm)>0.00000001)row.issues.push('CBM differs from rounded-up dimensions');
   output.push(row);
  }
  if(!output.length)throw Error('No carton rows were found below the shipment headers.');
@@ -54,15 +62,15 @@ function compare(row,products,{basis='cbm',freight='uploaded'}={}){
  if(!text(row.sku))return {...context,row,checked:false,issues:[...issues,'Enter SKU']};
  if(matches.length!==1)return {...context,row,checked:false,issues:[...issues,matches.length?'Duplicate SKU in Product Info':'SKU not found in Product Info']};
  const reference=matches[0];context.referenceRate=freight==='uploaded'?null:reference[freight+'Rate']??null;
- if(volume(reference)===null)return {...context,row,reference,checked:false,issues:[...issues,'Missing or invalid carton dimensions in Product Info']};
+ if(roundedVolume(reference)===null)return {...context,row,reference,checked:false,issues:[...issues,'Missing or invalid carton dimensions in Product Info']};
  if(!Number.isInteger(row.qty)||row.qty<=0)return {...context,row,reference,checked:false,issues:[...issues,'Enter a valid carton quantity first']};
- const benchmark={width:reference.width,length:reference.length,height:reference.height,cbm:volume(reference)};
+ const benchmark={width:reference.width,length:reference.length,height:reference.height,cbm:roundedVolume(reference)};
  benchmark.totalCbm=benchmark.cbm*row.qty;
  if(volume(row)!==null&&['width','length','height'].some(f=>Math.abs(row[f]-reference[f])>0.000001))issues.push('Uploaded dimensions differ from Product Info');
- if(reference.cbm!==null&&reference.cbm!==undefined){if(!positive(reference.cbm))issues.push('Invalid reported CBM in Product Info; benchmark dimensions used');else if(Math.abs(reference.cbm-benchmark.cbm)>0.00050001)issues.push('Product Info CBM differs from dimensions; benchmark dimensions used');}
+ if(reference.cbm!==null&&reference.cbm!==undefined){if(!positive(reference.cbm))issues.push('Invalid reported CBM in Product Info; benchmark dimensions used');else if(Math.abs(reference.cbm-benchmark.cbm)>0.00000001)issues.push('Product Info CBM differs from rounded-up dimensions; benchmark dimensions used');}
  let expectedOriginal=null,correctedAmount=null;
  if(positive(row.rate)||row.rate===0){
-  if(basis==='cbm'){const uploadedCbm=positive(row.cbm)?row.cbm:volume(row)===null?null:Math.round(volume(row)*1000)/1000;if(uploadedCbm!==null)expectedOriginal=money(uploadedCbm*row.qty*row.rate);}
+  if(basis==='cbm'){const uploadedCbm=positive(row.cbm)?row.cbm:roundedVolume(row);if(uploadedCbm!==null)expectedOriginal=money(uploadedCbm*row.qty*row.rate);}
   if(basis==='kg'&&positive(row.kg)){expectedOriginal=money(row.kg*row.qty*row.rate);correctedAmount=expectedOriginal;context.usedRate=row.rate;context.rateSource='Uploaded rate';}
  }
  if(basis==='cbm'){
@@ -83,5 +91,5 @@ function csv(results){
  const cell=value=>'"'+String(value??'').replace(/^[\s]*[=+@-]/,"'$&").replace(/"/g,'""')+'"';
  return [header,...results.map(r=>[r.row.row,r.row.tracking,r.row.extension,r.row.sku,r.row.qty,...['width','length','height','cbm'].map(k=>r.row[k]),...['width','length','height','cbm'].map(k=>r.reference?.[k]),r.benchmark?.cbm,r.benchmark?.totalCbm,r.row.kg,r.row.rate,r.row.amount,r.correctedAmount,r.difference,r.checked?'Yes':'No',r.issues.join('; '),r.freight,r.basis,r.referenceRate,r.usedRate,r.rateSource])].map(row=>row.map(cell).join(',')).join('\r\n');
 }
-const api={parse,catalog,compare,totals,volume,number,csv};if(typeof module==='object'&&module.exports)module.exports=api;root.NKMShipment=api;
+const api={parse,catalog,compare,totals,volume,roundedVolume,number,csv};if(typeof module==='object'&&module.exports)module.exports=api;root.NKMShipment=api;
 })(typeof window==='object'?window:globalThis);
