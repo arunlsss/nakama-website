@@ -114,3 +114,8 @@ html,.sidebar nav{scroll-behavior:smooth}
 .navigation-dialog{width:min(460px,calc(100% - 32px));max-height:calc(100dvh - 48px);padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);overflow:auto}.navigation-dialog::backdrop{background:rgba(10,14,22,.65)}
 .navigation-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}.navigation-heading h2{font-size:20px;margin:0}.navigation-dialog .nav-group:last-child{margin-bottom:0}.navigation-dialog .nav-item{min-height:44px;background:transparent;border:0;color:var(--ink);border-radius:9px;cursor:pointer}.navigation-dialog .nav-item.active{background:var(--subtle);color:var(--red)}.navigation-dialog .nav-item:hover{background:var(--subtle)}
 @media(max-width:850px){body:not(.stock-page):not(.customer-page)>.mobile-nav{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr}body:not(.stock-page):not(.customer-page)>main{padding-bottom:calc(116px + env(safe-area-inset-bottom))}body:not(.stock-page):not(.customer-page)>.toast{bottom:calc(100px + env(safe-area-inset-bottom))}.navigation-dialog{max-height:calc(100dvh - 48px)}.mobile-nav .nav-item{margin:0;width:auto;min-height:64px;text-align:center;font-size:14px}.mobile-nav .nav-item span{font-size:inherit;width:auto}}
+
+/* Store Overview is one document with section navigation. */
+#summary-view,#overview-view,#stores-view,#sku-view,#health-view,#customers-view,#bundles-view{scroll-margin-top:24px}
+#customers-view,#bundles-view{border-top:1px solid var(--line);padding-top:24px;margin-top:32px}
+@media(prefers-reduced-motion:reduce){html,.sidebar nav{scroll-behavior:auto}}

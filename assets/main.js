@@ -16,7 +16,7 @@
 
 /* ============ 1. COMPONENT LOADER ============ */
 async function loadComponents() {
-  const res  = await fetch('components.html');
+  const res  = await fetch('/components.html');
   const html = await res.text();
   const parser = new DOMParser();
   const doc    = parser.parseFromString(html, 'text/html');
@@ -64,40 +64,40 @@ const SLIDES = [
   headline:  'คิดดูแลรถ\nคิดถึงเรา',
   sub:       '· ยอดขายใบปัดน้ำฝนอันดับ 1 ในไทย\n· ขายมาแล้วมากกว่า 1,000,000 ชิ้น',
   cta_text:  'ดูสินค้าทั้งหมด',
-  cta_url:   'products.html',
+  cta_url:   '/products/',
   cta2_text: 'ค้นหาใบปัดรถคุณ',
-  cta2_url:  'find-wiper.html',
-  bg:        'assets/images/hero/slide-1.png',
+  cta2_url:  '/find-wiper/',
+  bg:        '/assets/images/hero/slide-1.png',
 },
   {
   eyebrow:   'NAKAMA5666 - WIPER BLADES',
   headline:  'ปรับทัศนวิสัย\nขับขี่ปลอดภัย',
   sub:       'ใบปัดหน้า-หลัง คุณภาพสูง รองรับรถยนต์กว่า 50 รุ่น',
   cta_text:  'ค้นหาใบปัดสำหรับรถคุณ',
-  cta_url:   'find-wiper.html',
+  cta_url:   '/find-wiper/',
   cta2_text: 'ดูใบปัดทั้งหมด',
-  cta2_url:  'products.html#wiper',
-  bg:        'assets/images/hero/slide-2.png',
+  cta2_url:  '/products/#wiper',
+  bg:        '/assets/images/hero/slide-2.png',
 },
   {
   eyebrow:   'SPRAY COLLECTION',
   headline:  'ดูแลรถครบ\nจบทุกปัญหา',
   sub:       'สเปรย์ 11 สูตร ครอบคลุมทั้งภายนอกและภายใน',
   cta_text:  'ดูสเปรย์ทั้งหมด',
-  cta_url:   'products.html#spray',
+  cta_url:   '/products/#spray',
   cta2_text: null,
   cta2_url:  null,
-  bg:        'assets/images/hero/slide-3.png',
+  bg:        '/assets/images/hero/slide-3.png',
 },
   {
   eyebrow:   'CARE COLLECTION',
   headline:  'ฟื้นฟูรถให้\nเหมือนใหม่',
   sub:       'น้ำยาขัดไฟหน้า · น้ำยาลบรอยขีดข่วน · น้ำยาขัดกระจกใส',
   cta_text:  'ดู Care Collection',
-  cta_url:   'products.html#care',
+  cta_url:   '/products/#care',
   cta2_text: null,
   cta2_url:  null,
-  bg:        'assets/images/hero/slide-4.png',
+  bg:        '/assets/images/hero/slide-4.png',
 },
   {
   eyebrow:   'BECOME A DEALER',
@@ -107,7 +107,7 @@ const SLIDES = [
   cta_url:   'https://lin.ee/sWgi73H',   /* ← LINE_URL */
   cta2_text: null,
   cta2_url:  null,
-  bg:        'assets/images/hero/slide-5.png',
+  bg:        '/assets/images/hero/slide-5.png',
 },
 ];
 
@@ -189,7 +189,7 @@ async function loadProducts(containerId, filter = null, limit = null, badgeFilte
   const el = document.querySelector(`#${containerId}`);
   if (!el) return;
 
-  const res  = await fetch('assets/data/products.json');
+  const res  = await fetch('/assets/data/products.json');
   const data = await res.json();
 
   let items = filter ? data.filter(p => p.category === filter || p.subcategory === filter) : data;
@@ -203,7 +203,7 @@ async function loadProducts(containerId, filter = null, limit = null, badgeFilte
   el.innerHTML = items.map(p => `
     <div class="product-card" data-modal-id="${p.id}">
       <div class="product-card-img">
-        <img src="${p.image}" alt="${_localise(p.name)}" loading="lazy">
+        <img src="${new URL(p.image, location.origin+'/').href}" alt="${_localise(p.name)}" loading="lazy">
         ${p.badge?.includes('best-seller')
           ? `<span class="product-card-badge badge badge-red">${badgeBestLabel}</span>`
           : ''}
@@ -231,14 +231,14 @@ async function loadSprayHighlight(containerId) {
   const el = document.querySelector(`#${containerId}`);
   if (!el) return;
 
-  const res   = await fetch('assets/data/products.json');
+  const res   = await fetch('/assets/data/products.json');
   const data  = await res.json();
   const sprays = data.filter(p => p.category === 'spray' || p.category === 'care');
 
   el.innerHTML = sprays.map(p => `
     <div class="spray-card" data-modal-id="${p.id}">
       <div class="spray-card-img">
-        <img src="${p.image}" alt="${_localise(p.name)}" loading="lazy">
+        <img src="${new URL(p.image, location.origin+'/').href}" alt="${_localise(p.name)}" loading="lazy">
       </div>
       <p class="spray-card-name">${_localise(p.name)}</p>
     </div>
@@ -260,7 +260,7 @@ let _productsCache = null;
 
 async function _getProducts() {
   if (_productsCache) return _productsCache;
-  const res = await fetch('assets/data/products.json');
+  const res = await fetch('/assets/data/products.json');
   _productsCache = await res.json();
   return _productsCache;
 }
@@ -334,7 +334,7 @@ async function showProductModal(productId) {
 
   // ── รูปสินค้า ──
   const imgEl = overlay.querySelector('#product-modal-img');
-  imgEl.src = product.image;
+  imgEl.src = new URL(product.image, location.origin+'/').href;
   imgEl.alt = _localise(product.name);
 
   // ── Badge บน image ──
@@ -363,12 +363,12 @@ async function showProductModal(productId) {
       <div class="product-modal-variant-dual">
         <a href="${variants[0].shopee_url}" target="_blank" rel="noopener"
            class="product-modal-variant-btn product-modal-variant-btn--shopee">
-          <img src="assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
+          <img src="/assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
           Shopee
         </a>
         <a href="${variants[0].tiktok_url ?? '#'}" target="_blank" rel="noopener"
            class="product-modal-variant-btn product-modal-variant-btn--tiktok">
-          <img src="assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
+          <img src="/assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
           TikTok Shop
         </a>
       </div>
@@ -382,12 +382,12 @@ async function showProductModal(productId) {
           <div class="product-modal-variant-btns">
             <a href="${v.shopee_url}" target="_blank" rel="noopener"
                class="product-modal-variant-btn product-modal-variant-btn--shopee">
-              <img src="assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
+              <img src="/assets/images/logo/shopee-logo.webp" alt="Shopee" class="product-modal-platform-icon">
               Shopee
             </a>
             <a href="${v.tiktok_url ?? '#'}" target="_blank" rel="noopener"
                class="product-modal-variant-btn product-modal-variant-btn--tiktok">
-              <img src="assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
+              <img src="/assets/images/logo/tiktok-shop-icon-logo-symbol-free-png.webp" alt="TikTok Shop" class="product-modal-platform-icon">
               TikTok
             </a>
           </div>
@@ -453,7 +453,7 @@ async function loadProductSections() {
         .map(p => `
           <div class="product-card" data-modal-id="${p.id}">
             <div class="product-card-img">
-              <img src="${p.image}" alt="${_localise(p.name)}" loading="lazy">
+              <img src="${new URL(p.image, location.origin+'/').href}" alt="${_localise(p.name)}" loading="lazy">
               ${p.badge?.includes('best-seller')
                 ? `<span class="product-card-badge badge badge-red">${badgeBestLabel}</span>`
                 : ''}
@@ -506,7 +506,7 @@ function initFindWiper() {
 
   let wiperData = [];
 
-  fetch('assets/data/wiper-sizes.json')
+  fetch('/assets/data/wiper-sizes.json')
     .then(r => r.json())
     .then(data => {
       wiperData = data;
