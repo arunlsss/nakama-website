@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const pages=['about','products','find-wiper','management','stock-forecast','customer-insight','advertising','bundles'];
+const pages=['about','products','find-wiper','management','stock-forecast','customer-insight','advertising','bundles','shipment-check'];
 function build({check=false}={}){
  for(const page of pages){
   const source=fs.readFileSync(path.join(root,page+'.html'),'utf8');
