@@ -23,7 +23,7 @@ function parse(rows,{sheet='Shipment',unit='cm'}={}){
   const row={id:sheet+':'+(i+1),row:i+1,sheet,tracking,extension,qty,width:number(at('width'))===null?null:number(at('width'))*factor,length:number(at('length'))===null?null:number(at('length'))*factor,height:number(at('height'))===null?null:number(at('height'))*factor,cbm:number(at('cbm')),rate:number(at('rate')),amount:number(at('amount')),kg:number(at('kg')),sku:text(at('sku')),issues:[]};
   if(!Number.isInteger(qty)||qty<=0)row.issues.push('Invalid carton count');
   if(volume(row)===null)row.issues.push('Missing or invalid dimensions');
-  if(!positive(row.cbm))row.issues.push(row.cbm===null?'Missing CBM; dimensions used':'Invalid CBM');
+  if(!positive(row.cbm))row.issues.push(row.cbm===null?'Missing uploaded CBM':'Invalid uploaded CBM');
   if(row.rate===null||row.rate<0)row.issues.push('Invalid unit rate');
   if(row.amount===null||row.amount<0)row.issues.push('Invalid amount');
   const computed=volume(row);if(computed!==null&&positive(row.cbm)&&Math.abs(computed-row.cbm)>0.00050001)row.issues.push('CBM differs from dimensions');
@@ -55,36 +55,33 @@ function compare(row,products,{basis='cbm',freight='uploaded'}={}){
  if(matches.length!==1)return {...context,row,checked:false,issues:[...issues,matches.length?'Duplicate SKU in Product Info':'SKU not found in Product Info']};
  const reference=matches[0];context.referenceRate=freight==='uploaded'?null:reference[freight+'Rate']??null;
  if(volume(reference)===null)return {...context,row,reference,checked:false,issues:[...issues,'Missing or invalid carton dimensions in Product Info']};
- if(volume(row)===null||!Number.isInteger(row.qty)||row.qty<=0||row.cbm!==null&&!positive(row.cbm))return {...context,row,reference,checked:false,issues:[...issues,'Complete valid carton dimensions and quantity first']};
- if(reference.cbm!==null&&reference.cbm!==undefined&&!positive(reference.cbm))return {...context,row,reference,checked:false,issues:[...issues,'Invalid CBM in Product Info']};
- const used={width:Math.min(row.width,reference.width),length:Math.min(row.length,reference.length),height:Math.min(row.height,reference.height)};
- const calculated=volume(used),excelCbm=positive(row.cbm)?row.cbm:volume(row),referenceCbm=positive(reference.cbm)?reference.cbm:volume(reference);
- used.cbm=Math.min(calculated,excelCbm,referenceCbm);used.totalCbm=used.cbm*row.qty;
- const dimensionsCapped=['width','length','height'].filter(f=>used[f]<row[f]);
- if(Math.abs(referenceCbm-volume(reference))>0.00050001)issues.push('Product Info CBM differs from dimensions');
- if(used.cbm<calculated-0.00050001)issues.push('Lower supplied CBM retained');
+ if(!Number.isInteger(row.qty)||row.qty<=0)return {...context,row,reference,checked:false,issues:[...issues,'Enter a valid carton quantity first']};
+ const benchmark={width:reference.width,length:reference.length,height:reference.height,cbm:volume(reference)};
+ benchmark.totalCbm=benchmark.cbm*row.qty;
+ if(volume(row)!==null&&['width','length','height'].some(f=>Math.abs(row[f]-reference[f])>0.000001))issues.push('Uploaded dimensions differ from Product Info');
+ if(reference.cbm!==null&&reference.cbm!==undefined){if(!positive(reference.cbm))issues.push('Invalid reported CBM in Product Info; benchmark dimensions used');else if(Math.abs(reference.cbm-benchmark.cbm)>0.00050001)issues.push('Product Info CBM differs from dimensions; benchmark dimensions used');}
  let expectedOriginal=null,correctedAmount=null;
  if(positive(row.rate)||row.rate===0){
-  if(basis==='cbm')expectedOriginal=money((positive(row.cbm)?row.cbm:Math.round(volume(row)*1000)/1000)*row.qty*row.rate);
+  if(basis==='cbm'){const uploadedCbm=positive(row.cbm)?row.cbm:volume(row)===null?null:Math.round(volume(row)*1000)/1000;if(uploadedCbm!==null)expectedOriginal=money(uploadedCbm*row.qty*row.rate);}
   if(basis==='kg'&&positive(row.kg)){expectedOriginal=money(row.kg*row.qty*row.rate);correctedAmount=expectedOriginal;context.usedRate=row.rate;context.rateSource='Uploaded rate';}
  }
  if(basis==='cbm'){
   if(freight==='uploaded'){context.usedRate=positive(row.rate)||row.rate===0?row.rate:null;context.rateSource='Uploaded rate';}
   else{context.rateSource='Product Info '+(freight==='sea'?'Sea':'Truck');context.usedRate=typeof context.referenceRate==='number'&&Number.isFinite(context.referenceRate)&&context.referenceRate>=0?context.referenceRate:null;if(context.usedRate===null)issues.push('Missing or invalid '+(freight==='sea'?'Sea':'Truck')+' freight rate in Product Info');else if(row.rate!==null&&Math.abs(row.rate-context.usedRate)>0.01)issues.push('Uploaded rate differs from '+(freight==='sea'?'Sea':'Truck')+' freight reference');}
-  if(context.usedRate!==null)correctedAmount=money(used.totalCbm*context.usedRate);
+  if(context.usedRate!==null)correctedAmount=money(benchmark.totalCbm*context.usedRate);
  }
  if(expectedOriginal!==null&&row.amount!==null&&Math.abs(expectedOriginal-row.amount)>0.02)issues.push('Amount differs from quantity × rate');
  if(basis==='kg'&&!positive(row.kg))issues.push('Missing weight for the kg charge check');
- return {...context,row,reference,used,checked:true,issues,dimensionsCapped,expectedOriginal,correctedAmount,difference:correctedAmount!==null&&row.amount!==null&&row.amount>=0?money(row.amount-correctedAmount):null};
+ return {...context,row,reference,benchmark,checked:true,issues,expectedOriginal,correctedAmount,difference:correctedAmount!==null&&row.amount!==null&&row.amount>=0?money(row.amount-correctedAmount):null};
 }
 function totals(results){
  const checked=results.filter(r=>r.checked),charges=checked.filter(r=>r.difference!==null);
- return {rows:results.length,checked:checked.length,issues:results.filter(r=>r.issues.length).length,boxes:results.reduce((n,r)=>n+(positive(r.row.qty)?r.row.qty:0),0),cbm:checked.reduce((n,r)=>n+r.used.totalCbm,0),amount:results.reduce((n,r)=>n+(r.row.amount>=0?r.row.amount:0),0),correctedAmount:charges.reduce((n,r)=>n+r.correctedAmount,0),difference:charges.reduce((n,r)=>n+r.difference,0),chargeRows:charges.length};
+ return {rows:results.length,checked:checked.length,issues:results.filter(r=>r.issues.length).length,boxes:results.reduce((n,r)=>n+(positive(r.row.qty)?r.row.qty:0),0),cbm:checked.reduce((n,r)=>n+r.benchmark.totalCbm,0),amount:results.reduce((n,r)=>n+(r.row.amount>=0?r.row.amount:0),0),correctedAmount:charges.reduce((n,r)=>n+r.correctedAmount,0),difference:charges.reduce((n,r)=>n+r.difference,0),chargeRows:charges.length};
 }
 function csv(results){
- const header=['Sheet row','Tracking','Carton','SKU','Boxes','Uploaded W cm','Uploaded L cm','Uploaded H cm','Uploaded CBM','Product Info W cm','Product Info D cm','Product Info H cm','Product Info CBM','Chosen W cm','Chosen L cm','Chosen H cm','Chosen CBM','Chosen total CBM','Uploaded kg per carton','Uploaded rate','Uploaded amount THB','Calculated amount THB','Difference THB','Matched','Issues','Freight method','Charge basis','Selected reference rate THB/m3','Used rate','Rate source'];
+ const header=['Sheet row','Tracking','Carton','SKU','Boxes','Uploaded W cm','Uploaded L cm','Uploaded H cm','Uploaded CBM','Product Info W cm','Product Info D cm','Product Info H cm','Product Info reported CBM','Benchmark CBM','Benchmark total CBM','Uploaded kg per carton','Uploaded rate','Uploaded amount THB','Calculated amount THB','Difference THB','Matched','Issues','Freight method','Charge basis','Selected reference rate THB/m3','Used rate','Rate source'];
  const cell=value=>'"'+String(value??'').replace(/^[\s]*[=+@-]/,"'$&").replace(/"/g,'""')+'"';
- return [header,...results.map(r=>[r.row.row,r.row.tracking,r.row.extension,r.row.sku,r.row.qty,...['width','length','height','cbm'].map(k=>r.row[k]),...['width','length','height','cbm'].map(k=>r.reference?.[k]),...['width','length','height','cbm','totalCbm'].map(k=>r.used?.[k]),r.row.kg,r.row.rate,r.row.amount,r.correctedAmount,r.difference,r.checked?'Yes':'No',r.issues.join('; '),r.freight,r.basis,r.referenceRate,r.usedRate,r.rateSource])].map(row=>row.map(cell).join(',')).join('\r\n');
+ return [header,...results.map(r=>[r.row.row,r.row.tracking,r.row.extension,r.row.sku,r.row.qty,...['width','length','height','cbm'].map(k=>r.row[k]),...['width','length','height','cbm'].map(k=>r.reference?.[k]),r.benchmark?.cbm,r.benchmark?.totalCbm,r.row.kg,r.row.rate,r.row.amount,r.correctedAmount,r.difference,r.checked?'Yes':'No',r.issues.join('; '),r.freight,r.basis,r.referenceRate,r.usedRate,r.rateSource])].map(row=>row.map(cell).join(',')).join('\r\n');
 }
 const api={parse,catalog,compare,totals,volume,number,csv};if(typeof module==='object'&&module.exports)module.exports=api;root.NKMShipment=api;
 })(typeof window==='object'?window:globalThis);
