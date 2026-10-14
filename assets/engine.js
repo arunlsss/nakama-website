@@ -9,7 +9,12 @@
     product:['product name','item name','ชื่อสินค้า'], price:['price','unit price','ราคา','ราคา(฿)'],
     qty:['quantity','qty','จำนวน'], line:['order item id','line item id','item id'],
     buyer:['username (buyer)','buyer username'],customerCode:['customer code'],
-    province:['province (state)','province','state'],country:['country'],variation:['variation name','variation']
+    province:['province (state)','province','state'],country:['country'],variation:['variation name','variation'],
+    cancelReason:['cancellation reason','cancel reason','cancellation reasons','เหตุผลการยกเลิก'],
+    beforeCancel:['status before canceled','status before cancelled','status before cancellation','สถานะก่อนยกเลิก'],
+    cancelTime:['cancel time','cancelled time','canceled time','cancellation time','เวลายกเลิก'],
+    shippedTime:['order shipped time','shipped time','actual shipped time','เวลาจัดส่ง'],
+    completedTime:['completed time','delivered time','เวลาสำเร็จ'],cancelInitiator:['cancel initiator','cancellation initiator','ผู้ยกเลิก']
   };
   const text=v=>String(v??'').trim();
   const number=v=>{if(typeof v==='number')return Number.isFinite(v)?v:NaN; const s=text(v).replace(/THB|฿|,/gi,'').trim();return s!==''&&/^[-+]?\d+(\.\d+)?$/.test(s)?Number(s):NaN;};
@@ -73,7 +78,8 @@
         if(o.lines.length)sources.set(key([k,sku]),source);
         if(o.status!==st&&partial)o.status='Completed';
         const lineId=c.line>=0?text(r[c.line]):'';if(lineId&&o.lineIds.has(lineId)){duplicates++;continue;}if(lineId)o.lineIds.add(lineId);
-        o.lines.push({status:st,sku,product:text(r[c.product]),price,qty,...(enrichment.line?.(r,c)||{})});lines++;
+        const cancellation=st==='Canceled'?{...(['cancelReason','beforeCancel','cancelTime','shippedTime','completedTime','cancelInitiator'].some(col=>c[col]>=0)?{version:1}:{}),...Object.fromEntries([['reason','cancelReason'],['beforeStatus','beforeCancel'],['cancelledAt','cancelTime'],['shippedAt','shippedTime'],['completedAt','completedTime'],['initiator','cancelInitiator']].flatMap(([field,col])=>{const v=c[col]>=0?r[c[col]]:null;if(v==null||text(v)===''||/^(?:--?|n\/a|null)$/i.test(text(v)))return [];return [[field,typeof v==='number'&&Number.isFinite(v)?v:v instanceof Date?v.toISOString():text(v).slice(0,500)]];}))}:{};
+        o.lines.push({status:st,sku,product:text(r[c.product]),price,qty,...(Object.keys(cancellation).length?{cancellation}:{}),...(enrichment.line?.(r,c)||{})});lines++;
       }
       }
       // Only processing-only identities need a marker. A real sale in this same

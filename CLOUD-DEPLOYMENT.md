@@ -239,3 +239,21 @@ npm run deploy -- --project nakama-sales
 ```
 
 Existing single-store and brand/group requests remain supported. No order reimport is required.
+
+## Cancellation reasons and shipment stages
+
+Order Health includes a cancellation panel with fully and partially canceled order counts, canceled item value and units, reason and stage charts, and an aggregate CSV breakdown. It follows the sales report's order-placement dates, selected stores and marketplace. Sales-basis and order-status selectors do not restrict this analysis.
+
+The importer now retains these optional BigSeller fields on canceled items: `Cancellation Reason`, `Status Before Canceled`, `Cancel Time`, `Order Shipped Time`, `Completed Time` and `Cancel Initiator`. Unknown or missing fields do not prevent an orders import. Existing totals and stock-demand treatment are unchanged.
+
+Stages describe recorded evidence: Before shipment, After shipment, After delivery / completion, Mixed stages, Conflicting evidence, or Unknown. Supported pre-cancellation statuses provide evidence; event times are interpreted in Bangkok. Date-only events on the same day cannot establish sequence. Missing shipment time, a tracking number, a printed label or a packed date does not establish whether an order was sent. Conflicting evidence stays visible rather than being forced into a before/after bucket.
+
+Pull the update and deploy from `backend`:
+
+```bash
+npm run deploy -- --project nakama-sales
+```
+
+Then reimport the original raw export files to populate cancellation fields that earlier imports discarded. If a source field is blank, it remains Not provided or Unknown. Reimporting the same source updates metadata without double-counting orders. The calculation extends the existing `nkmCustomerInsights` function and returns aggregate findings, not buyer identities or raw order IDs.
+
+Reason counts can overlap when one order has several canceled-item reasons. Shipment-stage counts count each affected order once. The table and CSV show up to 500 summary groups; the notice identifies any additional groups. Totals and stage counts include every matching canceled order.

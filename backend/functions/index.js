@@ -30,11 +30,17 @@ exports.nkmProcessImport=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concur
 exports.nkmReportPage=endpoint({},async request=>{await member(request);const args=C.pageArgs(request.data),[r,m]=await Promise.all([revisionRef(args.revision).get(),monthRef(args.revision,args.month).get()]);if(r.data()?.state!=='published'||!m.exists)C.fail('not-found','Published month unavailable.');const meta=m.data(),count=args.kind==='daily'?meta.dailyChunks:meta.skuChunks;return {revision:args.revision,month:args.month,kind:args.kind,total:args.kind==='daily'?meta.dailyRows:meta.skuRows,...await C.page(async n=>(await chunkRef(args.revision,args.month,args.kind,n).get()).data()?.rows,count,args)};});
 exports.nkmHistory=endpoint({},async request=>{await member(request);const s=await db.collection('reports').orderBy('publishedAt','desc').limit(30).get();return {history:s.docs.map(s=>{const d=s.data();return {revision:s.id,time:d.publishedAt.toMillis(),label:'Cloud orders imported',files:d.files,orders:d.orders};})};});
 // Cache one immutable product report per warm instance; membership is checked on every page.
-let productReportCache=null,bundleReportCache=null;
+let productReportCache=null,bundleReportCache=null,cancellationReportCache=null;
 const bundleAIEnabled=process.env.NKM_BUNDLE_AI_ENABLED==='true';
 // Customer hashes remain in the private canonical snapshot. Only aggregate findings leave this endpoint.
 exports.nkmCustomerInsights=endpoint({timeoutSeconds:540,memory:'4GiB',cpu:2,concurrency:1,maxInstances:2,...(bundleAIEnabled?{secrets:['NKM_BUNDLE_OPENAI_API_KEY']}:{})},async request=>{
  await member(request);
+ if(request.data?.op==='cancellations'){
+  const Cancel=require('./lib/cancellations');let args;try{args=Cancel.validate(request.data);}catch(e){C.fail('invalid-argument',e.message);}C.uuid(request.data.revision);
+  const published=(await revisionRef(request.data.revision).get()).data();if(published?.state!=='published'||!published.snapshot)C.fail('not-found','Published orders unavailable.');
+  const key=JSON.stringify([request.data.revision,args]);if(!cancellationReportCache||cancellationReportCache.key!==key)cancellationReportCache={key,report:Cancel.summary(await readOrders(published.snapshot),args)};
+  const report={...cancellationReportCache.report,revision:request.data.revision};await member(request);return report;
+ }
  if(['bundles','bundle-ai'].includes(request.data?.op)){
   const B=require('./lib/bundles');let args;try{args=B.validate(request.data);}catch(e){C.fail('invalid-argument',e.message);}
   const workspace=(await db.doc('workspace/main').get()).data(),revision=workspace?.revision||null,cacheKey=JSON.stringify([revision,args]);
