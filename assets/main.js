@@ -16,7 +16,7 @@
 
 /* ============ 1. COMPONENT LOADER ============ */
 async function loadComponents() {
-  const res  = await fetch('/components.html');
+  const res  = await fetch('/components.html?v=catalog-20261014');
   const html = await res.text();
   const parser = new DOMParser();
   const doc    = parser.parseFromString(html, 'text/html');
@@ -39,8 +39,10 @@ async function loadComponents() {
 function setActiveNav() {
   const page = document.body.dataset.page; // set data-page="home" on each <body>
   if (!page) return;
-  const link = document.querySelector(`.navbar-links a[data-page="${page}"]`);
-  if (link) link.classList.add('active');
+  document.querySelectorAll(`.navbar-links a[data-page="${page}"], .navbar-mobile-menu a[data-page="${page}"]`).forEach(link => {
+    link.classList.add('active');
+    link.setAttribute('aria-current', 'page');
+  });
 }
 
 
