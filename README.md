@@ -6,6 +6,8 @@ Independent Nakama website source with a responsive Management dashboard and Fir
 
 Features:
 
+- **WMS & Orders**: server-side BigSeller connection, scheduled warehouse inventory, order/return tracking, product catalog, settlement fees and wallet activity. See [WMS-DEPLOYMENT.md](WMS-DEPLOYMENT.md) for secure setup and live-verified API differences.
+
 - Email/password login with administrator-assigned viewer/importer/admin access.
 - Raw BigSeller XLSX/CSV uploads with browser preview and authoritative server calculations.
 - Price × Quantity GMV, unique orders, complete-order replacement, duplicate export handling and Bangkok dates.

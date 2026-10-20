@@ -18,7 +18,7 @@ function harness(records,{afterDownload=()=>{}}={}){
   if(name==='firebase-admin/auth')return {getAuth:()=>({getUser:async()=>({disabled:false})})};
   if(name==='firebase-admin/storage')return {getStorage:()=>({bucket:()=>({file:()=>({download:async()=>{downloads++;afterDownload(()=>enabled=false);return [snapshot];}})})})};
   if(name.startsWith('./lib/'))return require('../functions/'+name.slice(2));
-  if(name==='./auth-config.json')return {apiKey:'test-public-key'};return require(name);
+  if(name==='./auth-config.json')return {apiKey:'test-public-key'};return require('node:module').createRequire(require.resolve('../functions/index.js'))(name);
  }};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../functions/index.js'),'utf8'),sandbox);return {call:exports.nkmCustomerInsights,revoke:()=>enabled=false,downloads:()=>downloads};
 }
 const request=data=>({auth:{uid:'u',token:{nakamaRole:'viewer'}},data});
